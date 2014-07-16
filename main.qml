@@ -8,12 +8,13 @@ ApplicationWindow {
 	width: 800
 	height: 600
 	title: "CMS in Pocket"
+    property real magneticField: 0.2
 
 	//Filling of the Particle Array
 	property var particles: []
 
 	Component.onCompleted:{
-		for (var i=0; i<10; i++){
+        for (var i=0; i<1000; i++){
 			var p = Qt.createQmlObject('import QtQuick 2.0; Particle{}',world, "ParticleCreation");
 			particles.push(p);
 		}
@@ -48,17 +49,17 @@ ApplicationWindow {
 
 	function collisionEvent()
 	{
-		var numberOfSingleEvents = 1 + Math.floor(Math.random() * 4)
-		var numberOfPairEvents = Math.floor( Math.random() * 2)
-		for (var i = numberOfSingleEvents; i>0; i--)
+        var numberOfSingleEvents = 1 + Math.floor(Math.random() * 4)
+        var numberOfPairEvents = Math.floor( Math.random() * 2)
+        for (var i = numberOfSingleEvents; i>0; i--)
 			launchSingle();
-		for (var i = numberOfPairEvents; i>0; i--)
-			launchPair();
+        for (var i = numberOfPairEvents; i>0; i--)
+            launchPair();
 	}
 
 	function launchSingle(){
 		var p = particles.pop()
-		p.launch()
+        p.launch(Math.random() * 2 *Math.PI, Math.random() * 10)
 		particles.unshift(p)
 	}
 
@@ -67,8 +68,10 @@ ApplicationWindow {
 		var q = particles.pop()
 		var x = Math.random() * world.width
 		var y = Math.random() * world.height
-		p.launchDirection(x,y);
-		q.launchDirection(world.width - x, world.height - y);
+        var angle = Math.random() * 2 *Math.PI
+        var velocity = Math.random() * 10
+        p.launch(angle, velocity);
+        q.launch(angle - Math.PI, velocity);
 		particles.unshift(p)
 		particles.unshift(q)
 	}
