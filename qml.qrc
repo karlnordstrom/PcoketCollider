@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Particle.qml</file>
+        <file>BeamTube.qml</file>
+        <file>Detector.qml</file>
+        <file>Trail.qml</file>
+    </qresource>
+</RCC>
