@@ -3,12 +3,18 @@ import QtQuick 2.0
 Item{
 	property variant parentParticle: parent
 	property var rects: []
-	property int maximumLength: 10
-	Component.onCompleted:{
-		while (rects.length < maximumLength){
-			var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{width:3; height:15; color:"red"; anchors.centerIn: parent}',parentParticle, "TrailCreation");
+	property int maximumLength: 70
+	onOpacityChanged: {rects.forEach(function(r){r.opacity = opacity})}
+	function leaveTrail(x,y){
+		if (rects.length < maximumLength){
+			var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{width:2; height:2; radius:2; color:"red"; x:'+x+'; y:'+y+'}',world, "TrailCreation");
 			rects.push(t)
 		}
-		console.log(rects[0])
+	}
+
+	function clearPath(){
+		while(rects.length)
+			var r = rects.pop()
+			r.destroy();
 	}
 }

@@ -14,7 +14,7 @@ ApplicationWindow {
 	property var particles: []
 
 	Component.onCompleted:{
-        for (var i=0; i<1000; i++){
+		for (var i=0; i<100; i++){
 			var p = Qt.createQmlObject('import QtQuick 2.0; Particle{}',world, "ParticleCreation");
 			particles.push(p);
 		}

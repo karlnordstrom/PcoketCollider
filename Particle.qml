@@ -3,7 +3,7 @@ import "qrc:///"
 
 Item{
     property real mass: 1
-    property real lifetime: 10000
+	property real lifetime: 1000
     property real yVelocity: -3
     property real xVelocity: 3
     property real t: 0
@@ -21,6 +21,7 @@ Item{
         }
         onStopped: {
             particle.visible = false
+			trailFade.start()
         }
     }
 
@@ -36,9 +37,12 @@ Item{
 
         x = x + xVelocity
         y = y + yVelocity
+		trail.leaveTrail(x + particle.width / 2, y + particle.height / 2)
     }
 
     function launch(phi,velocityNorm){
+		x = beamTube.x + beamTube.width / 2
+		y = beamTube.y + beamTube.height / 2
         xVelocity = velocityNorm * Math.cos(phi) / mass
         yVelocity = velocityNorm * Math.sin(phi) / mass
         particle.visible = true;
@@ -53,5 +57,10 @@ Item{
 		height:10
 		radius:10
 		color: "blue"
+	}
+	Trail{
+		id: trail
+		visible: particle.visible
+		NumberAnimation on opacity{id:trailFade; from: 1; to:0; duration: 500; easing.type: Easing.OutCubic; running:false; onStopped:{trail.clearPath()}}
 	}
 }
