@@ -6,8 +6,8 @@ import "pdg.js" as PDG
 ApplicationWindow {
 	id: world
     visible: true
-	width: 800
-	height: 600
+    width: 1200
+    height: 900
     title: "Collider Detector in Pocket"
     property real magneticField: 0.05
 
@@ -25,8 +25,8 @@ ApplicationWindow {
 	Detector{
 		z:0
 		id: muonChamber
-		startRadius: 370
-		stopRadius: 630
+        startRadius: 500
+        stopRadius: 800
 		anchors.centerIn: parent
 		intersections: 3
 	}
@@ -34,8 +34,8 @@ ApplicationWindow {
 	Detector{
 		z:1
 		id: calorimeters
-		startRadius: 200
-		stopRadius: 350
+        startRadius: 270
+        stopRadius: 480
 		anchors.centerIn: parent
 	}
 
@@ -43,7 +43,7 @@ ApplicationWindow {
 		z:2
 		id: siliconDetector
 		startRadius: 110
-		stopRadius: 180
+        stopRadius: 250
 		anchors.centerIn: parent
 	}
 
@@ -65,7 +65,7 @@ ApplicationWindow {
 	function launchSingle(){
 		var p = particles.pop()
         var id = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
-        p.launch(Math.random() * 2 *Math.PI, 2 + Math.random() * 10, determineParticle(id))
+        p.launch(Math.random() * 2 *Math.PI, 4 + Math.random() * 10, determineParticle(id))
 		particles.unshift(p)
 	}
 
@@ -73,7 +73,7 @@ ApplicationWindow {
 		var p = particles.pop()
 		var q = particles.pop()
         var angle = Math.random() * 2 *Math.PI
-        var velocity = 2 + Math.random() * 10
+        var velocity = 4 + Math.random() * 10
         var id1 = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
         var id2 = - id1
         p.launch(angle, velocity, determineParticle(id1));
@@ -94,4 +94,37 @@ ApplicationWindow {
         if (id % size == 4)  { return "Neutrino"; }
         if (id % size == -4) { return "Antineutrino"; }
     }
+
+    function getMagneticField(radius){
+        if(radius < muonChamber.stopRadius/2){
+            return magneticField;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    // Function for making particles lose energy as function
+    // of which detector they are "in"
+    function getEnergyLoss(radius, tracks, cals){
+        if (!tracks && !cals){
+            return 1.;
+        }
+        else if (radius < siliconDetector.startRadius/2){
+            return 1.;
+        }
+        else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2 && tracks){
+            return 0.999;
+        }
+        else if (radius > siliconDetector.stopRadius/2 && radius < calorimeters.stopRadius/2 && cals){
+            return 0.9;
+        }
+        else if (radius < calorimeters.stopRadius/2 && radius < muonChamber.stopRadius/2 && tracks){
+            return 0.999;
+        }
+        else {
+            return 1.;
+        }
+    }
+
 }

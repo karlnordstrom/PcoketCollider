@@ -15,6 +15,8 @@ Item{
     property real t: 0
 	property real charge: PDG.Particles[type].charge
 	//initial position of a particle at center of BeamTube
+    property real middle_x: beamTube.x + beamTube.width/2
+    property real middle_y: beamTube.y + beamTube.height/2
     x: beamTube.x + beamTube.width/2
     y: beamTube.y + beamTube.height/2
 
@@ -36,10 +38,12 @@ Item{
     }
 
     onTChanged: {
+        var radius = getDistanceToMiddle(x, y)
         var norm = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
+                   * getEnergyLoss(radius, PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy)
         var forceDirection = Math.atan2(yVelocity,xVelocity) + charge * Math.PI/2
-        xVelocity = xVelocity + world.magneticField * Math.cos(forceDirection)
-        yVelocity = yVelocity + world.magneticField * Math.sin(forceDirection)
+        xVelocity = xVelocity + world.getMagneticField(radius) * Math.cos(forceDirection)
+        yVelocity = yVelocity + world.getMagneticField(radius) * Math.sin(forceDirection)
         var normalisationFactor = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
         xVelocity = (xVelocity / normalisationFactor) * norm
         yVelocity = (yVelocity / normalisationFactor) * norm
@@ -61,6 +65,10 @@ Item{
         yVelocity = velocityNorm * Math.sin(phi) / mass
         particle.visible = true;
         particleAnimationT.restart()
+    }
+
+    function getDistanceToMiddle(x, y){
+        return Math.sqrt(Math.pow(middle_x-x,2) + Math.pow(middle_y-y,2));
     }
 
 	Rectangle{

@@ -17,7 +17,10 @@ Item{
 		//no trace outside the detectors!
 		if (squaredDistance(x, y,(beamTube.x+beamTube.width/2), (beamTube.y+beamTube.height/2)) > Math.pow(muonChamber.stopRadius/2,2))
 			return;
-		if (points.length < maximumLength){
+        if (squaredDistance(x, y,(beamTube.x+beamTube.width/2), (beamTube.y+beamTube.height/2)) < Math.pow(calorimeters.stopRadius/2,2)
+                && squaredDistance(x, y,(beamTube.x+beamTube.width/2), (beamTube.y+beamTube.height/2)) > Math.pow(calorimeters.startRadius/2,2))
+            return;
+        if (points.length < maximumLength){
 			var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{width:2; height:2; radius:2; color:"red"; x:'+x+'; y:'+y+'}',world, "TrailCreation");
 			points.push(t)
 		} else {
