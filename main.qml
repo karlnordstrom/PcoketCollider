@@ -7,7 +7,6 @@ ApplicationWindow {
     visible: true
 	width: 800
 	height: 600
-    // Let's not call it CMS!!
     title: "Collider Detector in Pocket"
     property real magneticField: 0.05
 

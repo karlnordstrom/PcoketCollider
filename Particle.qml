@@ -45,7 +45,10 @@ Item{
         x = x + xVelocity
         y = y + yVelocity
 
-		trail.leaveTrail(x + particle.width / 2, y + particle.height / 2)
+		//just do a trace-point every 4 ticks
+		if(t % 4){
+			trail.leaveTrail(x + particle.width / 2, y + particle.height / 2)
+		}
     }
 
     function launch(phi,velocityNorm, particleType){
