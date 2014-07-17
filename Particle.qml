@@ -55,7 +55,6 @@ Item{
         particleAnimationT.restart()
     }
 
-
 	Rectangle{
 		id: particle
         visible: false
@@ -64,6 +63,7 @@ Item{
 		radius:10
 		color: "blue"
 	}
+
 	Trail{
 		id: trail
 		visible: particle.visible
