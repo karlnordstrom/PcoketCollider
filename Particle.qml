@@ -1,17 +1,20 @@
 import QtQuick 2.0
 import "qrc:///"
+import "pdg.js" as PDG
 
 Item{
-    property real mass: 1
+	property string type: "Electron"
+	property real mass: PDG.Particles[type].mass
     // Let's do more proper physics:
     // the 'lifetime' is the average time before
     // a particle decays, but the actual time varies
-	property real lifetime: 1000
+	property real lifetime: PDG.Particles[type].lifetime
     property real timeAlive: 1
     property real yVelocity: 0
     property real xVelocity: 0
     property real t: 0
-    property real charge: 1
+	property real charge: PDG.Particles[type].charge
+	//initial position of a particle at center of BeamTube
     x: beamTube.x + beamTube.width/2
     y: beamTube.y + beamTube.height/2
 
@@ -23,7 +26,7 @@ Item{
         duration: timeAlive
         onStarted: {
             particle.color = "blue"
-        }
+		}
         onStopped: {
             particle.visible = false
             trailFade.start()
