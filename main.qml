@@ -65,20 +65,24 @@ ApplicationWindow {
 
 	function launchSingle(){
 		var p = particles.pop()
+
         var id = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
         p.launch(Math.random() * 2 *Math.PI, 4 + Math.random() * 10, determineParticle(id))
+
 		particles.unshift(p)
 	}
 
 	function launchPair(){
 		var p = particles.pop()
 		var q = particles.pop()
-        var angle = Math.random() * 2 *Math.PI
+
+		var angle = Math.random() * 2 *Math.PI
         var velocity = 4 + Math.random() * 10
         var id1 = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
         var id2 = - id1
         p.launch(angle, velocity, determineParticle(id1));
         q.launch(angle - Math.PI, velocity, determineParticle(id2));
+
 		particles.unshift(p)
 		particles.unshift(q)
 	}
@@ -97,30 +101,22 @@ ApplicationWindow {
     }
 
     function getMagneticField(radius){
-        if(radius < muonChamber.stopRadius/2){
-            return magneticField;
-        }
+		if(radius < muonChamber.stopRadius/2)
+			return magneticField;
 		else return 0;
-    }
+	}
 
     // Function for making particles lose energy as function
     // of which detector they are "in"
-
     function getEnergyLoss(radius, tracks, cals, type){
         var photonStopper = 1.0
-        if ( type == "Photon") photonStopper = 0.8
-        if (!tracks && !cals)
-            return 1.;
-        else if (radius < siliconDetector.startRadius/2)
-            return 1.;
-        else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2 && tracks)
-            return 0.999;
-        else if (radius > calorimeters.startRadius/2 && radius < calorimeters.stopRadius/2 && cals)
-            return 0.9 * photonStopper;
-        else if (radius > muonChamber.startRadius/2 && radius < muonChamber.stopRadius/2 && tracks)
-            return 0.999;
-		else
-            return 1.;
+        if ( type == "Photon" ) photonStopper = 0.8
+        if (!tracks && !cals) return 1.;
+        else if (radius < siliconDetector.startRadius/2) return 1.;
+        else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2 && tracks) return 0.999;
+        else if (radius > calorimeters.startRadius/2 && radius < calorimeters.stopRadius/2 && cals) return 0.9 * photonStopper;
+        else if (radius > muonChamber.startRadius/2 && radius < muonChamber.stopRadius/2 && tracks) return 0.999;
+        else return 1.;
     }
 
     function getTracks(radius){
