@@ -26,8 +26,7 @@ Item{
     }
 
     onTChanged: {
-
-        var norm = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
+		var norm = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
         var forceDirection = Math.atan2(yVelocity,xVelocity) + Math.PI/2
         xVelocity = xVelocity + world.magneticField * Math.cos(forceDirection)
         yVelocity = yVelocity + world.magneticField * Math.sin(forceDirection)
@@ -37,6 +36,7 @@ Item{
 
         x = x + xVelocity
         y = y + yVelocity
+
 		trail.leaveTrail(x + particle.width / 2, y + particle.height / 2)
     }
 

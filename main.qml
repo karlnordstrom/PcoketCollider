@@ -22,13 +22,16 @@ ApplicationWindow {
 
 	//Detectors in reversed order (because of drawing)
 	Detector{
+		z:0
 		id: muonChamber
 		startRadius: 370
 		stopRadius: 630
 		anchors.centerIn: parent
+		intersections: 3
 	}
 
 	Detector{
+		z:1
 		id: calorimeters
 		startRadius: 200
 		stopRadius: 350
@@ -36,6 +39,7 @@ ApplicationWindow {
 	}
 
 	Detector{
+		z:2
 		id: siliconDetector
 		startRadius: 110
 		stopRadius: 180
@@ -43,6 +47,7 @@ ApplicationWindow {
 	}
 
 	BeamTube{
+		z:3
 		id: beamTube
 		anchors.centerIn: parent
 	}
