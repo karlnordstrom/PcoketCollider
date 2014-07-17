@@ -3,10 +3,15 @@ import "qrc:///"
 
 Item{
     property real mass: 1
+    // Let's do more proper physics:
+    // the 'lifetime' is the average time before
+    // a particle decays, but the actual time varies
 	property real lifetime: 1000
-    property real yVelocity: -3
-    property real xVelocity: 3
+    property real timeAlive: 1
+    property real yVelocity: 0
+    property real xVelocity: 0
     property real t: 0
+    property real charge: 1
     x: beamTube.x + beamTube.width/2
     y: beamTube.y + beamTube.height/2
 
@@ -14,21 +19,21 @@ Item{
         id: particleAnimationT
         running: false
         from: 0
-        to: lifetime
-        duration: lifetime
+        to: timeAlive
+        duration: timeAlive
         onStarted: {
             particle.color = "blue"
         }
         onStopped: {
             particle.visible = false
-			trailFade.start()
+            trailFade.start()
         }
     }
 
     onTChanged: {
 
         var norm = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
-        var forceDirection = Math.atan2(yVelocity,xVelocity) + Math.PI/2
+        var forceDirection = Math.atan2(yVelocity,xVelocity) + charge * Math.PI/2
         xVelocity = xVelocity + world.magneticField * Math.cos(forceDirection)
         yVelocity = yVelocity + world.magneticField * Math.sin(forceDirection)
         var normalisationFactor = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
@@ -41,8 +46,9 @@ Item{
     }
 
     function launch(phi,velocityNorm){
-		x = beamTube.x + beamTube.width / 2
-		y = beamTube.y + beamTube.height / 2
+        timeAlive = lifetime * Math.exp(2 * Math.random() - 1)
+        x = beamTube.x + beamTube.width / 2 - 4  // Using - 4 gets things in the centre
+        y = beamTube.y + beamTube.height / 2 - 4 // although it's dirty :D
         xVelocity = velocityNorm * Math.cos(phi) / mass
         yVelocity = velocityNorm * Math.sin(phi) / mass
         particle.visible = true;
@@ -61,6 +67,7 @@ Item{
 	Trail{
 		id: trail
 		visible: particle.visible
-		NumberAnimation on opacity{id:trailFade; from: 1; to:0; duration: 500; easing.type: Easing.OutCubic; running:false; onStopped:{trail.clearPath()}}
+        NumberAnimation on opacity{id:trailFade; from: 1; to:0; duration: timeAlive;
+            easing.type: Easing.OutCubic; running:false; onStopped:{trail.clearPath()}}
 	}
 }

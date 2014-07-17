@@ -7,7 +7,8 @@ ApplicationWindow {
     visible: true
 	width: 800
 	height: 600
-	title: "CMS in Pocket"
+    // Let's not call it CMS!!
+    title: "Collider Detector in Pocket"
     property real magneticField: 0.2
 
 	//Filling of the Particle Array
@@ -21,7 +22,7 @@ ApplicationWindow {
 	}
 
 	//Detectors in reversed order (because of drawing)
-	Detector{
+    Detector{
 		id: muonChamber
 		startRadius: 370
 		stopRadius: 630
@@ -59,7 +60,7 @@ ApplicationWindow {
 
 	function launchSingle(){
 		var p = particles.pop()
-        p.launch(Math.random() * 2 *Math.PI, Math.random() * 10)
+        p.launch(Math.random() * 2 *Math.PI, 2 + Math.random() * 10)
 		particles.unshift(p)
 	}
 
@@ -69,7 +70,7 @@ ApplicationWindow {
 		var x = Math.random() * world.width
 		var y = Math.random() * world.height
         var angle = Math.random() * 2 *Math.PI
-        var velocity = Math.random() * 10
+        var velocity = 2 + Math.random() * 10
         p.launch(angle, velocity);
         q.launch(angle - Math.PI, velocity);
 		particles.unshift(p)
