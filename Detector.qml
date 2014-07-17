@@ -6,7 +6,6 @@ Rectangle {
 	property int stopRadius;
 	property int intersections: 0
 
-	z:0
 	height: stopRadius
 	width: stopRadius
 	radius: stopRadius

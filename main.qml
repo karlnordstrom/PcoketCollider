@@ -51,6 +51,7 @@ ApplicationWindow {
 		z:3
 		id: beamTube
 		anchors.centerIn: parent
+		property point center: Qt.point(x + width/2, y + height/2)
 	}
 
 	function collisionEvent(){
@@ -99,32 +100,24 @@ ApplicationWindow {
         if(radius < muonChamber.stopRadius/2){
             return magneticField;
         }
-        else {
-            return 0;
-        }
+		else return 0;
     }
 
     // Function for making particles lose energy as function
     // of which detector they are "in"
     function getEnergyLoss(radius, tracks, cals){
-        if (!tracks && !cals){
-            return 1.;
-        }
-        else if (radius < siliconDetector.startRadius/2){
-            return 1.;
-        }
-        else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2 && tracks){
+		if (!tracks && !cals)
+			return 1.;
+		else if (radius < siliconDetector.startRadius/2)
+			return 1.;
+		else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2 && tracks)
             return 0.999;
-        }
-        else if (radius > siliconDetector.stopRadius/2 && radius < calorimeters.stopRadius/2 && cals){
+		else if (radius > siliconDetector.stopRadius/2 && radius < calorimeters.stopRadius/2 && cals)
             return 0.9;
-        }
-        else if (radius < calorimeters.stopRadius/2 && radius < muonChamber.stopRadius/2 && tracks){
+		else if (radius < calorimeters.stopRadius/2 && radius < muonChamber.stopRadius/2 && tracks)
             return 0.999;
-        }
-        else {
+		else
             return 1.;
-        }
     }
 
 }
