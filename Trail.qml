@@ -3,14 +3,13 @@ import QtQuick 2.0
 Item{
 	property variant parentParticle: parent
 	property var points: []
-	property int maximumLength: 70
+	property int maximumLength: parent.timeAlive
 	//put in a ring-buffer-like pointer to the oldest particle
 	//After creating all particle that is index 0
 	property int oldestPoint: 0
 	onOpacityChanged: {points.forEach(function(r){r.opacity = opacity})}
 
-	function squaredDistance(x1,y1,x2,y2)
-	{
+	function squaredDistance(x1,y1,x2,y2){
 		return Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2)
 	}
 

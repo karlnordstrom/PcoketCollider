@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.0
 import "qrc:///"
+import "pdg.js" as PDG
 
 ApplicationWindow {
 	id: world
@@ -52,19 +53,18 @@ ApplicationWindow {
 		anchors.centerIn: parent
 	}
 
-	function collisionEvent()
-	{
+	function collisionEvent(){
         var numberOfSingleEvents = 1 + Math.floor(Math.random() * 4)
         var numberOfPairEvents = Math.floor( Math.random() * 2)
         for (var i = numberOfSingleEvents; i>0; i--)
-			launchSingle();
+            launchSingle();
         for (var i = numberOfPairEvents; i>0; i--)
             launchPair();
 	}
 
 	function launchSingle(){
 		var p = particles.pop()
-        var id = Math.floor(Math.random() * 1000)
+        var id = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
         p.launch(Math.random() * 2 *Math.PI, 2 + Math.random() * 10, determineParticle(id))
 		particles.unshift(p)
 	}
@@ -74,8 +74,8 @@ ApplicationWindow {
 		var q = particles.pop()
         var angle = Math.random() * 2 *Math.PI
         var velocity = 2 + Math.random() * 10
-        var id1 = Math.floor(Math.random() * 1000)
-        var id2 = Math.floor(Math.random() * 1000)
+        var id1 = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
+        var id2 = - id1
         p.launch(angle, velocity, determineParticle(id1));
         q.launch(angle - Math.PI, velocity, determineParticle(id2));
 		particles.unshift(p)
@@ -83,10 +83,15 @@ ApplicationWindow {
 	}
 
     function determineParticle(id){
-        if (id % 5 == 0) { return "Electron"; }
-        if (id % 5 == 1) { return "Positron"; }
-        if (id % 5 == 2) { return "Proton"; }
-        if (id % 5 == 3) { return "Antiproton"; }
-        if (id % 5 == 4) { return "Neutron"; }
+        var size = PDG.Particles["index"].cardinality
+		if (id % size == 0)  { return "Photon"; }
+        if (id % size == 1)  { return "Electron"; }
+        if (id % size == -1) { return "Positron"; }
+        if (id % size == 2)  { return "Proton"; }
+        if (id % size == -2) { return "Antiproton"; }
+        if (id % size == 3)  { return "Neutron"; }
+        if (id % size == -3) { return "Antineutron"; }
+        if (id % size == 4)  { return "Neutrino"; }
+        if (id % size == -4) { return "Antineutrino"; }
     }
 }
