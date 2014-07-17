@@ -72,8 +72,6 @@ ApplicationWindow {
 	function launchPair(){
 		var p = particles.pop()
 		var q = particles.pop()
-		var x = Math.random() * world.width
-		var y = Math.random() * world.height
         var angle = Math.random() * 2 *Math.PI
         var velocity = 2 + Math.random() * 10
         p.launch(angle, velocity);
