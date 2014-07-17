@@ -132,7 +132,7 @@ ApplicationWindow {
             return false;
     }
 
-    function getCals(radius){
+	function isInCals(radius){
         if (radius < calorimeters.startRadius/2)
             return false;
         else if (radius > calorimeters.startRadius/2 && radius < calorimeters.stopRadius/2)

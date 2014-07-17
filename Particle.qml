@@ -64,6 +64,7 @@ Item{
 
 	Rectangle{
 		id: particle
+		z:2
 		property int size: PDG.Particles[type].size
 		visible: false
 		width:size
@@ -74,10 +75,12 @@ Item{
 
 	Trail{
 		id: trail
+		z:1
 		visible: particle.visible
 		NumberAnimation on opacity{
-			id:trailFade; from: 1; to:0; duration: 1000;
-			easing.type: Easing.OutCubic; running:false; onStopped:{trail.clearPath()}
+			id:trailFade; from: 1; to:0; duration: 2000;
+			easing.type: Easing.InCubic; running:false; onStopped:{trail.clearPath()}
 		}
 	}
+
 }

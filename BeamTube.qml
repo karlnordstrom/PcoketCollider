@@ -9,7 +9,6 @@ Item{
 		width:100
 		height:100
 		radius:100
-
 		color:"green"
 
 		MouseArea{
