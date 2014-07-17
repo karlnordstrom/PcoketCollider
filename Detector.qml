@@ -4,6 +4,7 @@ import QtQuick.Controls 1.0
 Rectangle {
 	property int startRadius;
 	property int stopRadius;
+	property int intersections: 0
 
 	z:0
 	height: stopRadius
@@ -19,13 +20,10 @@ Rectangle {
 		color: world.color
 	}
 
-	Path {
-		startX: 100; startY: 0
-
-		PathArc {
-			x: 0; y: 100
-			radiusX: 100; radiusY: 100
-			useLargeArc: true
+	Component.onCompleted: {
+		for( var i = 0; i < intersections; i++){
+			var angle = 90 + (360 / intersections) * i
+			Qt.createQmlObject('import QtQuick 2.0; Rectangle{ anchors.centerIn: parent; width: 10; height: stopRadius; rotation:' + angle + '; color: world.color}', parent, "Intersection")
 		}
 	}
 
