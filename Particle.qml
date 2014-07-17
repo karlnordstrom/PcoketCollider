@@ -48,7 +48,8 @@ Item{
 		trail.leaveTrail(x + particle.width / 2, y + particle.height / 2)
     }
 
-    function launch(phi,velocityNorm){
+    function launch(phi,velocityNorm, particleType){
+        type = particleType
         timeAlive = lifetime * Math.exp(2 * Math.random() - 1)
         x = beamTube.x + beamTube.width / 2 - 4  // Using - 4 gets things in the centre
         y = beamTube.y + beamTube.height / 2 - 4 // although it's dirty :D

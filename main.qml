@@ -9,7 +9,7 @@ ApplicationWindow {
 	height: 600
     // Let's not call it CMS!!
     title: "Collider Detector in Pocket"
-    property real magneticField: 0.2
+    property real magneticField: 0.05
 
 	//Filling of the Particle Array
 	property var particles: []
@@ -65,7 +65,8 @@ ApplicationWindow {
 
 	function launchSingle(){
 		var p = particles.pop()
-        p.launch(Math.random() * 2 *Math.PI, 2 + Math.random() * 10)
+        var id = Math.floor(Math.random() * 1000)
+        p.launch(Math.random() * 2 *Math.PI, 2 + Math.random() * 10, determineParticle(id))
 		particles.unshift(p)
 	}
 
@@ -74,9 +75,19 @@ ApplicationWindow {
 		var q = particles.pop()
         var angle = Math.random() * 2 *Math.PI
         var velocity = 2 + Math.random() * 10
-        p.launch(angle, velocity);
-        q.launch(angle - Math.PI, velocity);
+        var id1 = Math.floor(Math.random() * 1000)
+        var id2 = Math.floor(Math.random() * 1000)
+        p.launch(angle, velocity, determineParticle(id1));
+        q.launch(angle - Math.PI, velocity, determineParticle(id2));
 		particles.unshift(p)
 		particles.unshift(q)
 	}
+
+    function determineParticle(id){
+        if (id % 5 == 0) { return "Electron"; }
+        if (id % 5 == 1) { return "Positron"; }
+        if (id % 5 == 2) { return "Proton"; }
+        if (id % 5 == 3) { return "Antiproton"; }
+        if (id % 5 == 4) { return "Neutron"; }
+    }
 }
