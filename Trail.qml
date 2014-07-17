@@ -3,7 +3,7 @@ import QtQuick 2.0
 Item{
 	property variant parentParticle: parent
 	property var rects: []
-	property int maximumLength: 70
+    property int maximumLength: parent.timeAlive
 	onOpacityChanged: {rects.forEach(function(r){r.opacity = opacity})}
 	function leaveTrail(x,y){
 		if (rects.length < maximumLength){

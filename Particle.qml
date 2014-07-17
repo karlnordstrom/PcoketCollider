@@ -25,11 +25,13 @@ Item{
         to: timeAlive
         duration: timeAlive
         onStarted: {
-            particle.color = "blue"
+            particle.color = PDG.Particles[type].color
 		}
         onStopped: {
             particle.visible = false
-            trailFade.start()
+            if ( PDG.Particles[type].leavesTrack ) {
+                trailFade.start()
+            }
         }
     }
 
@@ -45,7 +47,8 @@ Item{
         x = x + xVelocity
         y = y + yVelocity
 
-		trail.leaveTrail(x + particle.width / 2, y + particle.height / 2)
+        if ( PDG.Particles[type].leavesTrack )
+            { trail.leaveTrail(x + particle.width / 2, y + particle.height / 2); }
     }
 
     function launch(phi,velocityNorm, particleType){
@@ -65,13 +68,13 @@ Item{
 		width:10
 		height:10
 		radius:10
-		color: "blue"
+        color: PDG.Particles[type].color
 	}
 
 	Trail{
 		id: trail
 		visible: particle.visible
-        NumberAnimation on opacity{id:trailFade; from: 1; to:0; duration: timeAlive;
+        NumberAnimation on opacity{id:trailFade; from: 1; to:0; duration: 100;
             easing.type: Easing.OutCubic; running:false; onStopped:{trail.clearPath()}}
 	}
 }
