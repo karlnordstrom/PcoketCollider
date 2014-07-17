@@ -18,14 +18,10 @@ Item{
         from: 0
         to: timeAlive
         duration: timeAlive
-        onStarted: {
-            particle.color = PDG.Particles[type].color
-		}
+		onStarted: {particle.color = PDG.Particles[type].color}
         onStopped: {
             particle.visible = false
-            if ( PDG.Particles[type].leavesTrack ) {
-                trailFade.start()
-            }
+			if (PDG.Particles[type].leavesTrack) trailFade.start()
         }
     }
 
@@ -46,7 +42,7 @@ Item{
         y = y + yVelocity
 
 		if (PDG.Particles[type].leavesTrack){
-			trail.leaveTrail(x + particle.size / 2, y + particle.size / 2); }
+			trail.leaveTrail(x + particle.size / 2, y + particle.size / 2);}
     }
 
     function launch(phi,velocityNorm, particleType){
@@ -62,7 +58,7 @@ Item{
     }
 
 	function distanceToMiddle(x, y){
-		return Math.sqrt(Math.pow(beamTube.center.x - x, 2) + Math.pow(beamTube.center.y - y, 2));}
+		return Math.sqrt(Math.pow(beamTube.center.x - x, 2) + Math.pow(beamTube.center.y - y, 2))}
 
 	Rectangle{
 		id: particle
@@ -78,7 +74,7 @@ Item{
 		id: trail
 		visible: particle.visible
 		NumberAnimation on opacity{
-			id:trailFade; from: 1; to:0; duration: 100;
+			id:trailFade; from: 1; to:0; duration: 1000;
 			easing.type: Easing.OutCubic; running:false; onStopped:{trail.clearPath()}
 		}
 	}
