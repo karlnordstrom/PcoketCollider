@@ -9,25 +9,22 @@ Item{
 	property int oldestPoint: 0
 	onOpacityChanged: {points.forEach(function(r){r.opacity = opacity})}
 
-	function squaredDistance(x1,y1,x2,y2){
-		return Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2)
-	}
-
-	function leaveTrail(x,y){
-		//no trace outside the detectors!
-		if (squaredDistance(x, y,(beamTube.x+beamTube.width/2), (beamTube.y+beamTube.height/2)) > Math.pow(muonChamber.stopRadius/2,2))
+    function leaveTrail(x,y, tracks, cals, radius){
+        if (radius > muonChamber.stopRadius/2){
 			return;
-        if (squaredDistance(x, y,(beamTube.x+beamTube.width/2), (beamTube.y+beamTube.height/2)) < Math.pow(calorimeters.stopRadius/2,2)
-                && squaredDistance(x, y,(beamTube.x+beamTube.width/2), (beamTube.y+beamTube.height/2)) > Math.pow(calorimeters.startRadius/2,2))
-            return;
-        if (points.length < maximumLength){
+        }
+        if ( world.getCals(radius) && cals ){
+            var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{width:5; height:5; radius:5; color:"red"; x:'+x+'; y:'+y+'}',world, "TrailCreation");
+            points.push(t)
+        }
+        if ( world.getTracks(radius) && tracks){
 			var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{width:2; height:2; radius:2; color:"red"; x:'+x+'; y:'+y+'}',world, "TrailCreation");
-			points.push(t)
-		} else {
-			points[oldestPoint].x = x
-			points[oldestPoint].y = y
-			oldestPoint = (oldestPoint + 1) % maximumLength
-		}
+            points.push(t)
+        }
+
+        points[oldestPoint].x = x
+        points[oldestPoint].y = y
+        oldestPoint = (oldestPoint + 1) % maximumLength
 	}
 
 	function clearPath(){

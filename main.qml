@@ -9,7 +9,7 @@ ApplicationWindow {
     width: 1200
     height: 900
     title: "Collider Detector in Pocket"
-    property real magneticField: 0.05
+    property real magneticField: 0.1
 
 	//Filling of the Particle Array
 	property var particles: []
@@ -54,8 +54,8 @@ ApplicationWindow {
 	}
 
 	function collisionEvent(){
-        var numberOfSingleEvents = 1 + Math.floor(Math.random() * 4)
-        var numberOfPairEvents = Math.floor( Math.random() * 2)
+        var numberOfSingleEvents = 1 + Math.floor(Math.random() * 5)
+        var numberOfPairEvents = Math.floor( Math.random() * 5)
         for (var i = numberOfSingleEvents; i>0; i--)
             launchSingle();
         for (var i = numberOfPairEvents; i>0; i--)
@@ -106,7 +106,9 @@ ApplicationWindow {
 
     // Function for making particles lose energy as function
     // of which detector they are "in"
-    function getEnergyLoss(radius, tracks, cals){
+    function getEnergyLoss(radius, tracks, cals, type){
+        var photonStopper = 1.0
+        if ( type == "Photon") photonStopper = 0.8
         if (!tracks && !cals){
             return 1.;
         }
@@ -116,15 +118,47 @@ ApplicationWindow {
         else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2 && tracks){
             return 0.999;
         }
-        else if (radius > siliconDetector.stopRadius/2 && radius < calorimeters.stopRadius/2 && cals){
-            return 0.9;
+        else if (radius > calorimeters.startRadius/2 && radius < calorimeters.stopRadius/2 && cals){
+            return 0.9 * photonStopper;
         }
-        else if (radius < calorimeters.stopRadius/2 && radius < muonChamber.stopRadius/2 && tracks){
+        else if (radius < muonChamber.startRadius/2 && radius < muonChamber.stopRadius/2 && tracks){
             return 0.999;
         }
         else {
             return 1.;
         }
     }
+
+    function getTracks(radius){
+        if (radius < siliconDetector.startRadius/2){
+            return false;
+        }
+        else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2){
+            return true;
+        }
+        else if (radius > calorimeters.startRadius/2 && radius < calorimeters.stopRadius/2){
+            return false;
+        }
+        else if (radius > muonChamber.startRadius/2 && radius < muonChamber.stopRadius/2){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function getCals(radius){
+        if (radius < calorimeters.startRadius/2){
+            return false;
+        }
+        else if (radius > calorimeters.startRadius/2 && radius < calorimeters.stopRadius/2){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
 
 }

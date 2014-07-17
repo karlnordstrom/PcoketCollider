@@ -15,10 +15,10 @@ Item{
     property real t: 0
 	property real charge: PDG.Particles[type].charge
 	//initial position of a particle at center of BeamTube
-    property real middle_x: beamTube.x + beamTube.width/2
-    property real middle_y: beamTube.y + beamTube.height/2
-    x: beamTube.x + beamTube.width/2
-    y: beamTube.y + beamTube.height/2
+    property real middle_x: beamTube.x + beamTube.width/2 - 4
+    property real middle_y: beamTube.y + beamTube.height/2 - 4
+    x: beamTube.x + beamTube.width/2 - 4
+    y: beamTube.y + beamTube.height/2 - 4
 
     NumberAnimation on t{
         id: particleAnimationT
@@ -31,7 +31,7 @@ Item{
 		}
         onStopped: {
             particle.visible = false
-            if ( PDG.Particles[type].leavesTrack ) {
+            if ( PDG.Particles[type].leavesTrack || PDG.Particles[type].leavesEnergy ) {
                 trailFade.start()
             }
         }
@@ -40,7 +40,7 @@ Item{
     onTChanged: {
         var radius = getDistanceToMiddle(x, y)
         var norm = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
-                   * getEnergyLoss(radius, PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy)
+                   * getEnergyLoss(radius, PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, type)
         var forceDirection = Math.atan2(yVelocity,xVelocity) + charge * Math.PI/2
         xVelocity = xVelocity + world.getMagneticField(radius) * Math.cos(forceDirection)
         yVelocity = yVelocity + world.getMagneticField(radius) * Math.sin(forceDirection)
@@ -52,8 +52,8 @@ Item{
         y = y + yVelocity
 
 	//just do a trace-point every 4 ticks
-		if ((PDG.Particles[type].leavesTrack) )
-            { trail.leaveTrail(x + particle.width / 2, y + particle.height / 2); }
+        trail.leaveTrail(x + particle.width / 2, y + particle.height / 2,
+                     PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
     }
 
     function launch(phi,velocityNorm, particleType){
@@ -83,7 +83,7 @@ Item{
 	Trail{
 		id: trail
 		visible: particle.visible
-        NumberAnimation on opacity{id:trailFade; from: 1; to:0; duration: 100;
+        NumberAnimation on opacity{id:trailFade; from: 1; to:0; duration: lifetime/2;
             easing.type: Easing.OutCubic; running:false; onStopped:{trail.clearPath()}}
 	}
 }
