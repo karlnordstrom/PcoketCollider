@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.0
 import "qrc:///"
 import "pdg.js" as PDG
+import "Physics.js" as PHYSICS
 
 ApplicationWindow {
 	id: world
@@ -10,7 +11,7 @@ ApplicationWindow {
     height: 900
     title: "Collider Detector in Pocket"
     property real magneticField: 0.5
-    property real c: 10
+    property real c: PHYSICS.c
 
 	//Filling of the Particle Array
 	property var particles: []

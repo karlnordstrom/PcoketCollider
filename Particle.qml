@@ -28,7 +28,7 @@ Item{
     }
 
     onTChanged: {
-		var radius = distanceToMiddle(x, y)
+        var radius = distanceToMiddle(x, y)
         var norm = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
                    * getEnergyLoss(radius, PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, type)
         var forceDirection = Math.atan2(yVelocity,xVelocity) + charge * Math.PI/2
@@ -65,9 +65,6 @@ Item{
         particleAnimationT.restart()
     }
 
-	function distanceToMiddle(x, y){
-		return Math.sqrt(Math.pow(beamTube.center.x - x, 2) + Math.pow(beamTube.center.y - y, 2))}
-
 	Rectangle{
 		id: particle
 		z:2
@@ -88,5 +85,9 @@ Item{
 			easing.type: Easing.InCubic; running:false; onStopped:{trail.clearPath()}
 		}
 	}
+
+    function distanceToMiddle(x, y){
+        return PHYSICS.distanceOf(beamTube.center.x, beamTube.center.y, x, y)
+    }
 
 }
