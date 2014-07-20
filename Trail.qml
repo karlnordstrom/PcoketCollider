@@ -18,8 +18,8 @@ Item{
 
 		//traces in differentDetectors
 		if ( world.isInCals(radius) && cals ) {
-			var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{z:0; width:5; height:5; radius:5; color:"red"; x:'+x+'; y:'+y+'}',world, "TrailCreation");
-            points.push(t);
+			//TODO put in energy here
+			emCalorimeters.deposit(0.9, Math.atan2((beamTube.center.y -y),(beamTube.center.x - x)))
 		}
 		if (world.getTracks(radius) && tracks){
 			var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{z:0; width:2; height:2; radius:2; color:"red"; x:'+x+'; y:'+y+'}',world, "TrailCreation");

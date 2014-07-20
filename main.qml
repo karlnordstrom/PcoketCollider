@@ -31,24 +31,32 @@ ApplicationWindow {
 		intersections: 3
 	}
 
-	Detector{
+//	Calorimeters{
+//		z:2
+//		id: hadronicCalorimeters
+//		startRadius: 330
+//		stopRadius: 480
+//		anchors.centerIn: parent
+//	}
+
+	EmCalorimeter{
 		z:1
-		id: calorimeters
-        startRadius: 270
-        stopRadius: 480
+		id: emCalorimeters
+		startRadius: 270
+		stopRadius: 320
 		anchors.centerIn: parent
 	}
 
 	Detector{
-		z:2
+		z:3
 		id: siliconDetector
 		startRadius: 110
-        stopRadius: 250
+		stopRadius: 270
 		anchors.centerIn: parent
 	}
 
 	BeamTube{
-		z:3
+		z: 4
 		id: beamTube
 		anchors.centerIn: parent
 		property point center: Qt.point(x + width/2, y + height/2)
@@ -114,7 +122,7 @@ ApplicationWindow {
         if (!tracks && !cals) return 1.;
         else if (radius < siliconDetector.startRadius/2) return 1.;
         else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2 && tracks) return 0.999;
-        else if (radius > calorimeters.startRadius/2 && radius < calorimeters.stopRadius/2 && cals) return 0.9 * photonStopper;
+		else if (radius > emCalorimeters.startRadius/2 && radius < emCalorimeters.stopRadius/2 && cals) return 0.9 * photonStopper;
         else if (radius > muonChamber.startRadius/2 && radius < muonChamber.stopRadius/2 && tracks) return 0.999;
         else return 1.;
     }
@@ -124,7 +132,7 @@ ApplicationWindow {
             return false;
         else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2)
             return true;
-        else if (radius > calorimeters.startRadius/2 && radius < calorimeters.stopRadius/2)
+		else if (radius > emCalorimeters.startRadius/2 && radius < emCalorimeters.stopRadius/2)
             return false;
         else if (radius > muonChamber.startRadius/2 && radius < muonChamber.stopRadius/2)
             return true;
@@ -133,9 +141,9 @@ ApplicationWindow {
     }
 
 	function isInCals(radius){
-        if (radius < calorimeters.startRadius/2)
+		if (radius < emCalorimeters.startRadius/2)
             return false;
-        else if (radius > calorimeters.startRadius/2 && radius < calorimeters.stopRadius/2)
+		else if (radius > emCalorimeters.startRadius/2 && radius < emCalorimeters.stopRadius/2)
             return true;
         else
             return false;
