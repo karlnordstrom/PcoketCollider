@@ -44,11 +44,11 @@ Item{
         if (PDG.Particles[type].leavesTrack || PDG.Particles[type].leavesEnergy){
             if (type == "Muon" || type == "Antimuon"){
                 if ( t % 2 == 0 )
-                    trail.leaveTrail(x + particle.size / 2, y + particle.size / 2,
+                    trail.leaveTrail(x - particle.size / 2, y - particle.size / 2,
                          PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
             }
             else
-                trail.leaveTrail(x + particle.size / 2, y + particle.size / 2,
+                trail.leaveTrail(x - particle.size / 2, y - particle.size / 2,
                      PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
         }
     }
@@ -58,8 +58,8 @@ Item{
         timeAlive = lifetime * Math.exp(2 * Math.random() - 1)
 		x = beamTube.center.x - particle.size / 2
 		y = beamTube.center.y - particle.size / 2
-        xVelocity = velocityNorm * Math.cos(phi) / mass
-        yVelocity = velocityNorm * Math.sin(phi) / mass
+        xVelocity = velocityNorm * Math.cos(phi)
+        yVelocity = velocityNorm * Math.sin(phi)
         particle.visible = true;
         particleAnimationT.restart()
     }

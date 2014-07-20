@@ -9,7 +9,8 @@ ApplicationWindow {
     width: 1200
     height: 900
     title: "Collider Detector in Pocket"
-    property real magneticField: 0.2
+    property real magneticField: 0.5
+    property real c: 10
 
 	//Filling of the Particle Array
 	property var particles: []
@@ -67,7 +68,7 @@ ApplicationWindow {
 		var p = particles.pop()
 
         var id = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
-        p.launch(Math.random() * 2 *Math.PI, 4 + Math.random() * 10, PDG.determineParticle(id))
+        p.launch(Math.random() * 2 *Math.PI, c, PDG.determineParticle(id))
 
 		particles.unshift(p)
 	}
@@ -80,8 +81,8 @@ ApplicationWindow {
         var velocity = 4 + Math.random() * 10
         var id1 = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
         var id2 = - id1
-        p.launch(angle, velocity, PDG.determineParticle(id1));
-        q.launch(angle - Math.PI, velocity, PDG.determineParticle(id2));
+        p.launch(angle, c, PDG.determineParticle(id1));
+        q.launch(angle - Math.PI, c, PDG.determineParticle(id2));
 
 		particles.unshift(p)
 		particles.unshift(q)
@@ -93,7 +94,7 @@ ApplicationWindow {
         else if (isInCals(radius))
             return 0;
         else if (isInMuonChambers(radius))
-            return -magneticField;
+            return -magneticField/2;
         else return 0;
 	}
 

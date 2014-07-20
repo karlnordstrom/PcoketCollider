@@ -16,12 +16,12 @@ Item{
 		//traces in differentDetectors
 		if ( world.isInCals(radius) && cals ) {
             var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{z:0; width:5; height:5; radius:5; color:"red";
-                 x:'+x+ parentParticle.width/2+'; y:'+y+ parentParticle.width/2+'}',world, "TrailCreation");
+                 x:'+x+'; y:'+y+'}',world, "TrailCreation");
             points.push(t);
 		}
         if ( (world.isInTrackers(radius) || world.isInMuonChambers(radius)) && tracks){
             var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{z:0; width:2; height:2; radius:2; color:"red";
-                x:'+x+ parentParticle.width/2+'; y:'+y+ parentParticle.width/2+'}',world, "TrailCreation");
+                x:'+x+'; y:'+y+'}',world, "TrailCreation");
 			points.push(t)
 		}
 	}
