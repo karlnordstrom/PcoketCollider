@@ -13,18 +13,17 @@ Item{
 		//calculate current track-beam distance
         var distance = distanceOf(x, y, beamTube.center.x, beamTube.center.y)
 
-		//no traces outside the detectors!
-		if ( distance > muonChamber.stopRadius / 2) return;
-
 		//traces in differentDetectors
 		if ( world.isInCals(radius) && cals ) {
-			var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{z:0; width:5; height:5; radius:5; color:"red"; x:'+x+'; y:'+y+'}',world, "TrailCreation");
+            var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{z:0; width:5; height:5; radius:5; color:"red";
+                 x:'+x+ parentParticle.width/2+'; y:'+y+ parentParticle.width/2+'}',world, "TrailCreation");
             points.push(t);
 		}
-        if (world.isInTrackers(radius) && tracks){
-			var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{z:0; width:2; height:2; radius:2; color:"red"; x:'+x+'; y:'+y+'}',world, "TrailCreation");
+        if ( (world.isInTrackers(radius) || world.isInMuonChambers(radius)) && tracks){
+            var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{z:0; width:2; height:2; radius:2; color:"red";
+                x:'+x+ parentParticle.width/2+'; y:'+y+ parentParticle.width/2+'}',world, "TrailCreation");
 			points.push(t)
 		}
 	}
-	function clearPath(){ while(points.length) points.pop().destroy();}
+    function clearPath(){ while(points.length) points.pop().destroy(); }
 }

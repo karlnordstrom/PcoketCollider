@@ -9,7 +9,7 @@ Item{
     property real timeAlive: 1
     property real yVelocity: 0
     property real xVelocity: 0
-    property real t: 0
+    property int t: 0
 	property real charge: PDG.Particles[type].charge
 
     NumberAnimation on t{
@@ -41,16 +41,21 @@ Item{
         x = x + xVelocity
         y = y + yVelocity
 
-	//just do a trace-point every 4 ticks
         if (PDG.Particles[type].leavesTrack || PDG.Particles[type].leavesEnergy){
-            trail.leaveTrail(x + particle.size / 2, y + particle.size / 2,
-                     PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);}
+            if (type == "Muon" || type == "Antimuon"){
+                if ( t % 2 == 0 )
+                    trail.leaveTrail(x + particle.size / 2, y + particle.size / 2,
+                         PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
+            }
+            else
+                trail.leaveTrail(x + particle.size / 2, y + particle.size / 2,
+                     PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
+        }
     }
 
     function launch(phi,velocityNorm, particleType){
         type = particleType
         timeAlive = lifetime * Math.exp(2 * Math.random() - 1)
-		//setting startpoint considering size of particle
 		x = beamTube.center.x - particle.size / 2
 		y = beamTube.center.y - particle.size / 2
         xVelocity = velocityNorm * Math.cos(phi) / mass
