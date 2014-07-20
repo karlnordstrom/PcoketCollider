@@ -119,7 +119,7 @@ ApplicationWindow {
         else return 1.;
     }
 
-    function getTracks(radius){
+    function isInTrackers(radius){
         if (radius < siliconDetector.startRadius/2)
             return false;
         else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2)
