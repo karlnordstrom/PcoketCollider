@@ -29,12 +29,12 @@ Item{
 
     onTChanged: {
         var radius = distanceToMiddle(x, y)
-        var norm = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
+        var norm = PHYSICS.vectorMag(xVelocity, yVelocity)
                    * getEnergyLoss(radius, PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, type)
         var forceDirection = Math.atan2(yVelocity,xVelocity) + charge * Math.PI/2
         xVelocity = xVelocity + world.getMagneticField(radius) * Math.cos(forceDirection)
 		yVelocity = yVelocity + world.getMagneticField(radius) * Math.sin(forceDirection)
-		var normalisationFactor = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
+        var normalisationFactor = PHYSICS.vectorMag(xVelocity, yVelocity)
 
 		xVelocity = (xVelocity / normalisationFactor) * norm
         yVelocity = (yVelocity / normalisationFactor) * norm
