@@ -68,7 +68,7 @@ ApplicationWindow {
 		var p = particles.pop()
 
         var id = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
-        p.launch(Math.random() * 2 *Math.PI, c, PDG.determineParticle(id))
+        p.launch(Math.random() * 2 *Math.PI, 40 + Math.random() * 40, PDG.determineParticle(id))
 
 		particles.unshift(p)
 	}
@@ -78,11 +78,11 @@ ApplicationWindow {
 		var q = particles.pop()
 
 		var angle = Math.random() * 2 *Math.PI
-        var velocity = 4 + Math.random() * 10
+        var velocity = 40 + Math.random() * 40
         var id1 = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
         var id2 = - id1
-        p.launch(angle, c, PDG.determineParticle(id1));
-        q.launch(angle - Math.PI, c, PDG.determineParticle(id2));
+        p.launch(angle, velocity, PDG.determineParticle(id1));
+        q.launch(angle - Math.PI, velocity, PDG.determineParticle(id2));
 
 		particles.unshift(p)
 		particles.unshift(q)
@@ -99,13 +99,13 @@ ApplicationWindow {
 	}
 
     function getEnergyLoss(radius, tracks, cals, type){
-        var photonStopper = 1.0
-        if ( type == "Photon" ) photonStopper = 0.8
+        var EMStopper = 1.0
+        if ( type == "Photon" ) EMStopper = 0.8
         if (!tracks && !cals) return 1.;
         else if (isInTrackers(radius) && tracks)
             return 0.999;
         else if (isInCals(radius) && cals)
-            return 0.9 * photonStopper;
+            return 0.9 * EMStopper;
         else if (isInMuonChambers(radius) && tracks)
             return 0.999;
         else return 1.;

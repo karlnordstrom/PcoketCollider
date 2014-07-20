@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import "qrc:///"
 import "pdg.js" as PDG
+import "Physics.js" as PHYSICS
 
 Item{
 	property string type: "Electron"
@@ -42,24 +43,24 @@ Item{
         y = y + yVelocity
 
         if (PDG.Particles[type].leavesTrack || PDG.Particles[type].leavesEnergy){
-            if (type == "Muon" || type == "Antimuon"){
-                if ( t % 2 == 0 )
-                    trail.leaveTrail(x - particle.size / 2, y - particle.size / 2,
-                         PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
-            }
-            else
-                trail.leaveTrail(x - particle.size / 2, y - particle.size / 2,
+//            if (type == "Muon" || type == "Antimuon"){
+//                if ( t % 2 == 0 )
+//                    trail.leaveTrail(x + particle.size / 3, y + particle.size / 3,
+//                         PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
+//            }
+//            else
+                trail.leaveTrail(x + particle.size / 3, y + particle.size / 3,
                      PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
         }
     }
 
-    function launch(phi,velocityNorm, particleType){
+    function launch(phi, energy, particleType){
         type = particleType
         timeAlive = lifetime * Math.exp(2 * Math.random() - 1)
 		x = beamTube.center.x - particle.size / 2
 		y = beamTube.center.y - particle.size / 2
-        xVelocity = velocityNorm * Math.cos(phi)
-        yVelocity = velocityNorm * Math.sin(phi)
+        xVelocity = world.c * Math.cos(phi) * PHYSICS.betaFromEMass(energy, mass)
+        yVelocity = world.c * Math.sin(phi) * PHYSICS.betaFromEMass(energy, mass)
         particle.visible = true;
         particleAnimationT.restart()
     }

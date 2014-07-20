@@ -6,5 +6,6 @@
         <file>Detector.qml</file>
         <file>Trail.qml</file>
         <file>pdg.js</file>
+        <file>Physics.js</file>
     </qresource>
 </RCC>

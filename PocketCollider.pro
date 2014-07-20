@@ -13,4 +13,5 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 OTHER_FILES += \
-    pdg.js
+    pdg.js \
+    Physics.js
