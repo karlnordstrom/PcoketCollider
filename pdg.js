@@ -15,6 +15,45 @@ function determineParticle(id){
     if (id % size == -5) { return "Antimuon"; }
 }
 
+function determinePdgId(id){
+    if (id == 1)   { return "Down"; }
+    if (id == -1)  { return "Antidown"; }
+    if (id == 2)   { return "Up"; }
+    if (id == -2)  { return "Antiup"; }
+    if (id == 3)   { return "Strange"; }
+    if (id == -3)  { return "Antistrange"; }
+    if (id == 4)   { return "Charm"; }
+    if (id == -4)  { return "Anticharm"; }
+    if (id == 5)   { return "Bottom"; }
+    if (id == -5)  { return "Antibottom"; }
+    if (id == 6)   { return "Top"; }
+    if (id == -6)  { return "Antitop"; }
+    if (id == 11)  { return "Electron"; }
+    if (id == -11) { return "Positron"; }
+    if (id == 12)  { return "Neutrino"; }
+    if (id == -12) { return "Neutrino"; }
+    if (id == 13)  { return "Muon"; }
+    if (id == -13) { return "Antimuon"; }
+    if (id == 14)  { return "Neutrino"; }
+    if (id == -14) { return "Neutrino"; }
+    if (id == 15)  { return "Tau"; }
+    if (id == -15) { return "Antitau"; }
+    if (id == 16)  { return "Neutrino"; }
+    if (id == -16) { return "Neutrino"; }
+    if (id == 9)   { return "Gluon"; }
+    if (id == -9)  { return "Gluon"; }
+    if (id == 21)  { return "Gluon"; }
+    if (id == -21) { return "Gluon"; }
+    if (id == 22)  { return "Photon"; }
+    if (id == -22) { return "Photon"; }
+    if (id == 23)  { return "ZBoson"; }
+    if (id == -23) { return "ZBoson"; }
+    if (id == 24)  { return "WBoson"; }
+    if (id == -24) { return "AntiWBoson"; }
+    if (id == 25)  { return "Higgs"; }
+    if (id == -25) { return "Higgs"; }
+}
+
 // PDG
 //This is the Library to store the Properties of different particles
 // leavesTrack      (interacts with trackers)
