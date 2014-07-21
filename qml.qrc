@@ -9,5 +9,9 @@
         <file>EmCalorimeter.qml</file>
         <file>emColliderSector.png</file>
         <file>emColliderSectorDeposit.png</file>
+        <file>Physics.js</file>
+        <file>HdCalorimeter.qml</file>
+        <file>hdColliderSector.png</file>
+        <file>hdColliderSectorDeposit.png</file>
     </qresource>
 </RCC>

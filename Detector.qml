@@ -9,7 +9,7 @@ Rectangle {
 	height: stopRadius
 	width: stopRadius
 	radius: stopRadius
-	color:Qt.lighter("gray")
+	color: "gray"
 	Rectangle{
 		z:3
 		height: startRadius

@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import "qrc:///"
 import "pdg.js" as PDG
+import "Physics.js" as PHYSICS
 
 Item{
 	property string type: "Electron"
@@ -9,7 +10,7 @@ Item{
     property real timeAlive: 1
     property real yVelocity: 0
     property real xVelocity: 0
-    property real t: 0
+    property int t: 0
 	property real charge: PDG.Particles[type].charge
 
     NumberAnimation on t{
@@ -27,7 +28,7 @@ Item{
     }
 
     onTChanged: {
-		var radius = distanceToMiddle(x, y)
+        var radius = distanceToMiddle(x, y)
         var norm = Math.sqrt(Math.pow(xVelocity,2) + Math.pow(yVelocity,2))
                    * getEnergyLoss(radius, PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, type)
         var forceDirection = Math.atan2(yVelocity,xVelocity) + charge * Math.PI/2
@@ -41,26 +42,28 @@ Item{
         x = x + xVelocity
         y = y + yVelocity
 
-	//just do a trace-point every 4 ticks
         if (PDG.Particles[type].leavesTrack || PDG.Particles[type].leavesEnergy){
-            trail.leaveTrail(x + particle.size / 2, y + particle.size / 2,
-                     PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);}
+//            if (type == "Muon" || type == "Antimuon"){
+//                if ( t % 2 == 0 )
+//                    trail.leaveTrail(x + particle.size / 3, y + particle.size / 3,
+//                         PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
+//            }
+//            else
+                trail.leaveTrail(x + particle.size / 3, y + particle.size / 3,
+                     PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
+        }
     }
 
-    function launch(phi,velocityNorm, particleType){
+    function launch(phi, energy, particleType){
         type = particleType
         timeAlive = lifetime * Math.exp(2 * Math.random() - 1)
-		//setting startpoint considering size of particle
 		x = beamTube.center.x - particle.size / 2
 		y = beamTube.center.y - particle.size / 2
-        xVelocity = velocityNorm * Math.cos(phi) / mass
-        yVelocity = velocityNorm * Math.sin(phi) / mass
+        xVelocity = world.c * Math.cos(phi) * PHYSICS.betaFromEMass(energy, mass)
+        yVelocity = world.c * Math.sin(phi) * PHYSICS.betaFromEMass(energy, mass)
         particle.visible = true;
         particleAnimationT.restart()
     }
-
-	function distanceToMiddle(x, y){
-		return Math.sqrt(Math.pow(beamTube.center.x - x, 2) + Math.pow(beamTube.center.y - y, 2))}
 
 	Rectangle{
 		id: particle
@@ -82,5 +85,9 @@ Item{
 			easing.type: Easing.InCubic; running:false; onStopped:{trail.clearPath()}
 		}
 	}
+
+    function distanceToMiddle(x, y){
+        return PHYSICS.distanceOf(beamTube.center.x, beamTube.center.y, x, y)
+    }
 
 }

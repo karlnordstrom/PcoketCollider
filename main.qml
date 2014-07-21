@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.0
 import "qrc:///"
 import "pdg.js" as PDG
+import "Physics.js" as PHYSICS
 
 ApplicationWindow {
 	id: world
@@ -9,7 +10,8 @@ ApplicationWindow {
     width: 1200
     height: 900
     title: "Collider Detector in Pocket"
-    property real magneticField: 0.1
+    property real magneticField: 0.5
+    property real c: PHYSICS.c
 
 	//Filling of the Particle Array
 	property var particles: []
@@ -31,13 +33,13 @@ ApplicationWindow {
 		intersections: 3
 	}
 
-//	Calorimeters{
-//		z:2
-//		id: hadronicCalorimeters
-//		startRadius: 330
-//		stopRadius: 480
-//		anchors.centerIn: parent
-//	}
+	HdCalorimeter{
+		z:2
+		id: hdCalorimeters
+		startRadius: 280
+		stopRadius: 480
+		anchors.centerIn: parent
+	}
 
 	EmCalorimeter{
 		z:1
@@ -75,7 +77,7 @@ ApplicationWindow {
 		var p = particles.pop()
 
         var id = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
-        p.launch(Math.random() * 2 *Math.PI, 4 + Math.random() * 10, determineParticle(id))
+        p.launch(Math.random() * 2 *Math.PI, 40 + Math.random() * 40, PDG.determineParticle(id))
 
 		particles.unshift(p)
 	}
@@ -85,62 +87,51 @@ ApplicationWindow {
 		var q = particles.pop()
 
 		var angle = Math.random() * 2 *Math.PI
-        var velocity = 4 + Math.random() * 10
+        var velocity = 40 + Math.random() * 40
         var id1 = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
         var id2 = - id1
-        p.launch(angle, velocity, determineParticle(id1));
-        q.launch(angle - Math.PI, velocity, determineParticle(id2));
+        p.launch(angle, velocity, PDG.determineParticle(id1));
+        q.launch(angle - Math.PI, velocity, PDG.determineParticle(id2));
 
 		particles.unshift(p)
 		particles.unshift(q)
 	}
 
-    function determineParticle(id){
-        var size = PDG.Particles["index"].cardinality
-		if (id % size == 0)  { return "Photon"; }
-        if (id % size == 1)  { return "Electron"; }
-        if (id % size == -1) { return "Positron"; }
-        if (id % size == 2)  { return "Proton"; }
-        if (id % size == -2) { return "Antiproton"; }
-        if (id % size == 3)  { return "Neutron"; }
-        if (id % size == -3) { return "Antineutron"; }
-        if (id % size == 4)  { return "Neutrino"; }
-        if (id % size == -4) { return "Antineutrino"; }
-    }
-
     function getMagneticField(radius){
-		if(radius < muonChamber.stopRadius/2)
+        if (isInTrackers(radius))
 			return magneticField;
-		else return 0;
+		else if (isInEmCals(radius)||isInHdCals(radius))
+            return 0;
+        else if (isInMuonChambers(radius))
+            return -magneticField/2;
+        else return 0;
 	}
 
-    // Function for making particles lose energy as function
-    // of which detector they are "in"
     function getEnergyLoss(radius, tracks, cals, type){
-        var photonStopper = 1.0
-        if ( type == "Photon" ) photonStopper = 0.8
+        var EMStopper = 1.0
+        if ( type == "Photon" ) EMStopper = 0.8
         if (!tracks && !cals) return 1.;
-        else if (radius < siliconDetector.startRadius/2) return 1.;
-        else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2 && tracks) return 0.999;
-		else if (radius > emCalorimeters.startRadius/2 && radius < emCalorimeters.stopRadius/2 && cals) return 0.9 * photonStopper;
-        else if (radius > muonChamber.startRadius/2 && radius < muonChamber.stopRadius/2 && tracks) return 0.999;
+        else if (isInTrackers(radius) && tracks)
+            return 0.999;
+		else if (isInEmCals(radius) && cals)
+            return 0.9 * EMStopper;
+		else if (isInHdCals(radius) && cals)
+			return 0.9 * EMStopper;
+        else if (isInMuonChambers(radius) && tracks)
+            return 0.999;
         else return 1.;
     }
 
-    function getTracks(radius){
+    function isInTrackers(radius){
         if (radius < siliconDetector.startRadius/2)
             return false;
         else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2)
-            return true;
-		else if (radius > emCalorimeters.startRadius/2 && radius < emCalorimeters.stopRadius/2)
-            return false;
-        else if (radius > muonChamber.startRadius/2 && radius < muonChamber.stopRadius/2)
             return true;
         else
             return false;
     }
 
-	function isInCals(radius){
+	function isInEmCals(radius){
 		if (radius < emCalorimeters.startRadius/2)
             return false;
 		else if (radius > emCalorimeters.startRadius/2 && radius < emCalorimeters.stopRadius/2)
@@ -149,4 +140,21 @@ ApplicationWindow {
             return false;
     }
 
+	function isInHdCals(radius){
+		if (radius < hdCalorimeters.startRadius/2)
+			return false;
+		else if (radius > hdCalorimeters.startRadius/2 && radius < hdCalorimeters.stopRadius/2)
+			return true;
+		else
+			return false;
+	}
+
+    function isInMuonChambers(radius){
+        if (radius < muonChamber.startRadius/2)
+            return false;
+        else if (radius > muonChamber.startRadius/2 && radius < muonChamber.stopRadius/2)
+            return true;
+        else
+            return false;
+    }
 }
