@@ -10,6 +10,7 @@ Item{
     property real timeAlive: 1
     property real yVelocity: 0
     property real xVelocity: 0
+    property real energy: 0
     property int t: 0
 	property real charge: PDG.Particles[type].charge
 
@@ -22,19 +23,23 @@ Item{
 		onStarted: {particle.color = PDG.Particles[type].color}
         onStopped: {
             particle.visible = false
-            if ( PDG.Particles[type].leavesTrack || PDG.Particles[type].leavesEnergy )
-                trailFade.start()
+            trailFade.start()
         }
     }
 
     onTChanged: {
         var radius = distanceToMiddle(x, y)
-        var norm = PHYSICS.vectorMag(xVelocity, yVelocity)
-                   * getEnergyLoss(radius, PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, type)
+        var newEnergy = energy * getEnergyLoss(radius, PDG.Particles[type].leavesTrack,
+                            PDG.Particles[type].leavesEMEnergy, PDG.Particles[type].leavesHadEnergy, type)
+        var lostEnergy = energy - newEnergy
+        energy = newEnergy
+        var normalisationFactor = PHYSICS.vectorMag(xVelocity, yVelocity)
+        var norm = PHYSICS.c
+        if (!fuzzyEquals(mass, 0))
+            var norm = PHYSICS.betaFromEMass(energy, mass) * PHYSICS.c
         var forceDirection = Math.atan2(yVelocity,xVelocity) + charge * Math.PI/2
         xVelocity = xVelocity + world.getMagneticField(radius) * Math.cos(forceDirection)
-		yVelocity = yVelocity + world.getMagneticField(radius) * Math.sin(forceDirection)
-        var normalisationFactor = PHYSICS.vectorMag(xVelocity, yVelocity)
+        yVelocity = yVelocity + world.getMagneticField(radius) * Math.sin(forceDirection)
 
 		xVelocity = (xVelocity / normalisationFactor) * norm
         yVelocity = (yVelocity / normalisationFactor) * norm
@@ -42,25 +47,28 @@ Item{
         x = x + xVelocity
         y = y + yVelocity
 
-        if (PDG.Particles[type].leavesTrack || PDG.Particles[type].leavesEnergy){
-//            if (type == "Muon" || type == "Antimuon"){
-//                if ( t % 2 == 0 )
-//                    trail.leaveTrail(x + particle.size / 3, y + particle.size / 3,
-//                         PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
-//            }
-//            else
-                trail.leaveTrail(x + particle.size / 3, y + particle.size / 3,
-                     PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEnergy, radius);
+        trail.leaveTrail(x + particle.size / 3, y + particle.size / 3, lostEnergy,
+             PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEMEnergy, PDG.Particles[type].leavesHadEnergy, radius);
+        if (energy < 0.1){
+            particle.visible = false
+            trailFade.start()
         }
     }
 
-    function launch(phi, energy, particleType){
+    function launch(phi, launchEnergy, particleType){
         type = particleType
-        timeAlive = lifetime * Math.exp(2 * Math.random() - 1)
-		x = beamTube.center.x - particle.size / 2
+        energy = launchEnergy
+        timeAlive = lifetime
+        x = beamTube.center.x - particle.size / 2
 		y = beamTube.center.y - particle.size / 2
-        xVelocity = world.c * Math.cos(phi) * PHYSICS.betaFromEMass(energy, mass)
-        yVelocity = world.c * Math.sin(phi) * PHYSICS.betaFromEMass(energy, mass)
+        if(fuzzyEquals(mass, 0)){
+            xVelocity = world.c * Math.cos(phi)
+            yVelocity = world.c * Math.sin(phi)
+        }
+        else {
+            xVelocity = world.c * Math.cos(phi) * PHYSICS.betaFromEMass(energy, mass)
+            yVelocity = world.c * Math.sin(phi) * PHYSICS.betaFromEMass(energy, mass)
+        }
         particle.visible = true;
         particleAnimationT.restart()
     }
@@ -88,6 +96,11 @@ Item{
 
     function distanceToMiddle(x, y){
         return PHYSICS.distanceOf(beamTube.center.x, beamTube.center.y, x, y)
+    }
+
+    function fuzzyEquals(x, y){
+        if (x - y < 0.0001) return true;
+        else return false;
     }
 
 }
