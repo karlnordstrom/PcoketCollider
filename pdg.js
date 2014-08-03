@@ -15,7 +15,7 @@ function determineParticle(id){
     if (id % size == -5) { return "Antimuon"; }
 }
 
-function determinePdgId(id){
+function determinePdgId(id, charge){
     if (id == 1)   { return "Down"; }
     if (id == -1)  { return "Antidown"; }
     if (id == 2)   { return "Up"; }
@@ -52,6 +52,9 @@ function determinePdgId(id){
     if (id == -24) { return "AntiWBoson"; }
     if (id == 25)  { return "Higgs"; }
     if (id == -25) { return "Higgs"; }
+    if (charge == -1) { return "Negpion"; }
+    if (charge ==  1) { return "Pluspion"; }
+    if (charge ==  0) { return "Pion"; }
 }
 
 // PDG
@@ -60,15 +63,18 @@ function determinePdgId(id){
 // leavesEnergy     (interacts with calorimeters)
 var Particles = {
     index:          {cardinality: 6},
-    Photon:         {mass: 0.0, charge:  0, lifetime:2000, size:10, color: "black", leavesTrack: false, leavesEMEnergy: 0.1, leavesHadEnergy: 1.},
-    Electron:       {mass: 0.5, charge:  1, lifetime:2000, size:10, color: "blue" , leavesTrack: true, leavesEMEnergy: 0.2, leavesHadEnergy: 0.95},
-    Positron:       {mass: 0.5, charge: -1, lifetime:2000, size:10, color: "blue" , leavesTrack: true, leavesEMEnergy: 0.2, leavesHadEnergy: 0.95},
-    Proton:         {mass: 0.5, charge:  1, lifetime:2000, size:10, color: "red"  , leavesTrack: true, leavesEMEnergy: 0.95, leavesHadEnergy: 0.3},
-    Antiproton:     {mass: 0.5, charge: -1, lifetime:2000, size:10, color: "red"  , leavesTrack: true, leavesEMEnergy: 0.95, leavesHadEnergy: 0.3},
-    Neutron:        {mass: 0.5, charge:  0, lifetime:2000, size:10, color: "grey" , leavesTrack: false, leavesEMEnergy: 1.0, leavesHadEnergy: 0.3},
-    Antineutron:    {mass: 0.5, charge:  0, lifetime:2000, size:10, color: "grey" , leavesTrack: false, leavesEMEnergy: 1.0, leavesHadEnergy: 0.3},
-    Neutrino:       {mass: 0.5, charge:  0, lifetime:2000, size:10, color: "white", leavesTrack: false, leavesEMEnergy: 1.0, leavesHadEnergy: 1.0},
-    Antineutrino:   {mass: 0.5, charge:  0, lifetime:2000, size:10, color: "white", leavesTrack: false, leavesEMEnergy: 1.0, leavesHadEnergy: 1.0},
-    Muon:           {mass: 0.5, charge:  1, lifetime:2000, size:10, color: Qt.darker("blue"), leavesTrack: true, leavesEMEnergy: 0.98, leavesHadEnergy: 1.0},
-    Antimuon:       {mass: 0.5, charge: -1, lifetime:2000, size:10, color: Qt.darker("blue"), leavesTrack: true, leavesEMEnergy: 0.98, leavesHadEnergy: 1.0}
+    Photon:         {mass: 0.0, charge:  0, lifetime:2000, size:0, color: "black", leavesTrack: false, leavesEMEnergy: 0.1, leavesHadEnergy: 1.},
+    Electron:       {mass: 0.2, charge:  1, lifetime:2000, size:0, color: "blue" , leavesTrack: true, leavesEMEnergy: 0.2, leavesHadEnergy: 0.95},
+    Positron:       {mass: 0.2, charge: -1, lifetime:2000, size:0, color: "blue" , leavesTrack: true, leavesEMEnergy: 0.2, leavesHadEnergy: 0.95},
+    Proton:         {mass: 0.5, charge:  1, lifetime:2000, size:0, color: "red"  , leavesTrack: true, leavesEMEnergy: 0.95, leavesHadEnergy: 0.3},
+    Antiproton:     {mass: 0.5, charge: -1, lifetime:2000, size:0, color: "red"  , leavesTrack: true, leavesEMEnergy: 0.95, leavesHadEnergy: 0.3},
+    Pluspion:       {mass: 0.2, charge:  1, lifetime:2000, size:0, color: Qt.lighter("red"), leavesTrack: true, leavesEMEnergy: 0.95, leavesHadEnergy: 0.3},
+    Negpion:        {mass: 0.2, charge: -1, lifetime:2000, size:0, color: Qt.lighter("red"), leavesTrack: true, leavesEMEnergy: 0.95, leavesHadEnergy: 0.3},
+    Pion:           {mass: 0.2, charge:  0, lifetime:2000, size:0, color: Qt.lighter("grey"), leavesTrack: false, leavesEMEnergy: 1.0, leavesHadEnergy: 0.3},
+    Neutron:        {mass: 0.5, charge:  0, lifetime:2000, size:0, color: "grey" , leavesTrack: false, leavesEMEnergy: 1.0, leavesHadEnergy: 0.3},
+    Antineutron:    {mass: 0.5, charge:  0, lifetime:2000, size:0, color: "grey" , leavesTrack: false, leavesEMEnergy: 1.0, leavesHadEnergy: 0.3},
+    Neutrino:       {mass: 0.0, charge:  0, lifetime:2000, size:0, color: "white", leavesTrack: false, leavesEMEnergy: 1.0, leavesHadEnergy: 1.0},
+    Antineutrino:   {mass: 0.0, charge:  0, lifetime:2000, size:0, color: "white", leavesTrack: false, leavesEMEnergy: 1.0, leavesHadEnergy: 1.0},
+    Muon:           {mass: 0.5, charge:  1, lifetime:2000, size:0, color: Qt.darker("blue"), leavesTrack: true, leavesEMEnergy: 0.98, leavesHadEnergy: 1.0},
+    Antimuon:       {mass: 0.5, charge: -1, lifetime:2000, size:0, color: Qt.darker("blue"), leavesTrack: true, leavesEMEnergy: 0.98, leavesHadEnergy: 1.0},
     }

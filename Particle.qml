@@ -47,9 +47,9 @@ Item{
         x = x + xVelocity
         y = y + yVelocity
 
-        trail.leaveTrail(x + particle.size / 3, y + particle.size / 3, lostEnergy,
+        trail.leaveTrail(x, y, lostEnergy,
              PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEMEnergy, PDG.Particles[type].leavesHadEnergy, radius);
-        if (energy < 1){
+        if (energy < 0.1){
             particle.visible = false
             trailFade.start()
         }
@@ -59,8 +59,8 @@ Item{
         type = particleType
         energy = launchEnergy
         timeAlive = lifetime
-        x = beamTube.center.x - particle.size / 2
-		y = beamTube.center.y - particle.size / 2
+        x = beamTube.center.x
+        y = beamTube.center.y
         if(fuzzyEquals(mass, 0)){
             xVelocity = world.c * Math.cos(phi)
             yVelocity = world.c * Math.sin(phi)

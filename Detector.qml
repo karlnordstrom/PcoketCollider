@@ -5,6 +5,8 @@ Rectangle {
 	property int startRadius;
 	property int stopRadius;
 	property int intersections: 0
+    property int spatialStart;
+    property int spatialStop;
 
 	height: stopRadius
 	width: stopRadius
@@ -22,7 +24,7 @@ Rectangle {
 	Component.onCompleted: {
 		for( var i = 0; i < intersections; i++){
 			var angle = 90 + (360 / intersections) * i
-			Qt.createQmlObject('import QtQuick 2.0; Rectangle{anchors.centerIn: parent; width: 10; height: stopRadius; rotation:' + angle + '; color: world.color}', parent, "Intersection")
+            Qt.createQmlObject('import QtQuick 2.0; Rectangle{anchors.centerIn: parent; width: 10; height: stopRadius; rotation:' + angle + '; color: world.color}', parent, "Intersection")
 		}
 	}
 

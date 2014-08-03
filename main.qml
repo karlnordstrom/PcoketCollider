@@ -3,6 +3,7 @@ import QtQuick.Controls 1.0
 import "qrc:///"
 import "pdg.js" as PDG
 import "Physics.js" as PHYSICS
+import "Events.js" as EVENTS
 
 ApplicationWindow {
 	id: world
@@ -24,20 +25,24 @@ ApplicationWindow {
 	}
 
 	//Detectors in reversed order (because of drawing)
+    //Need two different radii since animation is not 1-to-1 with spatial coordinates
 	Detector{
 		z:0
 		id: muonChamber
-        startRadius: 500
+        startRadius: 490
         stopRadius: 800
+        spatialStart: 480
+        spatialStop: 780
 		anchors.centerIn: parent
-		intersections: 3
 	}
 
 	HdCalorimeter{
 		z:2
 		id: hdCalorimeters
-		startRadius: 280
+        startRadius: 280
 		stopRadius: 480
+        spatialStart: 300
+        spatialStop: 480
 		anchors.centerIn: parent
 	}
 
@@ -46,14 +51,18 @@ ApplicationWindow {
 		id: emCalorimeters
 		startRadius: 270
 		stopRadius: 320
+        spatialStart: 260
+        spatialStop: 300
 		anchors.centerIn: parent
 	}
 
 	Detector{
 		z:3
 		id: siliconDetector
-		startRadius: 110
-		stopRadius: 270
+        startRadius: 100
+        stopRadius: 280
+        spatialStart: 80
+        spatialStop: 260
 		anchors.centerIn: parent
 	}
 
@@ -64,20 +73,36 @@ ApplicationWindow {
 		property point center: Qt.point(x + width/2, y + height/2)
 	}
 
-	function collisionEvent(){
-        var numberOfSingleEvents = 1 + Math.floor(Math.random() * 5)
-        var numberOfPairEvents = Math.floor( Math.random() * 5)
-        for (var i = numberOfSingleEvents; i>0; i--)
-            launchSingle();
-        for (var i = numberOfPairEvents; i>0; i--)
-            launchPair();
-	}
+    function collisionEvent(typeOfEvent){
+        if (typeof typeOfEvent !== 'undefined') {
+            var evNo = Math.floor(Math.random() * EVENTS.Events["numberOfEvents"].numEv)
+            var noOfParts = EVENTS.Events["Event"+evNo]["numberOfParticles"].numPart
+            var randPhi = Math.random() * 2 * Math.PI
+            for (var i = 0; i < noOfParts; i++)
+                launchSingle(EVENTS.Events["Event"+evNo]["particle"+i].pdgId, EVENTS.Events["Event"+evNo]["particle"+i].energy, EVENTS.Events["Event"+evNo]["particle"+i].azimuthalAngle,
+                             EVENTS.Events["Event"+evNo]["particle"+i].charge)
+        }
+        else {
+            var numberOfSingleEvents = 1 + Math.floor(Math.random() * 5)
+            var numberOfPairEvents = Math.floor( Math.random() * 5)
+            for (var i = numberOfSingleEvents; i>0; i--)
+                launchSingle();
+            for (var i = numberOfPairEvents; i>0; i--)
+                launchPair();
+        }
+    }
 
-	function launchSingle(){
+    function launchSingle(id, energy, phi, charge){
+
+        id = typeof id !== 'undefined' ? id : -1;
+        energy = typeof energy !== 'undefined' ? energy : -1.0;
+        phi = typeof phi !== 'undefined' ? phi : Math.random() * 2 *Math.PI;
 		var p = particles.pop()
 
-        var id = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
-        p.launch(Math.random() * 2 *Math.PI, 40 + Math.random() * 40, PDG.determineParticle(id))
+        if (id == -1) var type = PDG.determineParticle(Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000))
+        else var type = PDG.determinePdgId(id, charge)
+        if (energy == -1.0) energy = 1 + Math.random() * 10
+        p.launch(phi, energy, type)
 
 		particles.unshift(p)
 	}
@@ -87,7 +112,7 @@ ApplicationWindow {
 		var q = particles.pop()
 
 		var angle = Math.random() * 2 *Math.PI
-        var energy = 40 + Math.random() * 40
+        var energy = 1 + Math.random() * 10
         var id1 = Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000)
         var id2 = - id1
         p.launch(angle, energy, PDG.determineParticle(id1));
@@ -121,38 +146,56 @@ ApplicationWindow {
     }
 
     function isInTrackers(radius){
-        if (radius < siliconDetector.startRadius/2)
+        if (radius < siliconDetector.spatialStart/2.)
             return false;
-        else if (radius > siliconDetector.startRadius/2 && radius < siliconDetector.stopRadius/2)
+        else if (radius > siliconDetector.spatialStart/2. && radius < siliconDetector.spatialStop/2.)
             return true;
         else
             return false;
     }
 
 	function isInEmCals(radius){
-		if (radius < emCalorimeters.startRadius/2)
+        if (radius < emCalorimeters.startRadius/2.)
             return false;
-		else if (radius > emCalorimeters.startRadius/2 && radius < emCalorimeters.stopRadius/2)
+        else if (radius > emCalorimeters.startRadius/2. && radius < emCalorimeters.stopRadius/2.)
             return true;
         else
             return false;
     }
 
 	function isInHdCals(radius){
-		if (radius < hdCalorimeters.startRadius/2)
+        if (radius < hdCalorimeters.startRadius/2.)
 			return false;
-		else if (radius > hdCalorimeters.startRadius/2 && radius < hdCalorimeters.stopRadius/2)
+        else if (radius > hdCalorimeters.startRadius/2. && radius < hdCalorimeters.stopRadius/2.)
 			return true;
 		else
 			return false;
 	}
 
     function isInMuonChambers(radius){
-        if (radius < muonChamber.startRadius/2)
+        if (radius < muonChamber.spatialStart/2)
             return false;
-        else if (radius > muonChamber.startRadius/2 && radius < muonChamber.stopRadius/2)
+        else if (radius > muonChamber.spatialStart/2 && radius < muonChamber.spatialStop/2)
             return true;
         else
             return false;
     }
+
+    ComboBox {
+      id: selectEventType
+      editable: false
+      model: ListModel {
+       id: eventType
+       ListElement { text: "Dijet"; color: "Yellow" }
+       ListElement { text: "Higgs"; color: "Green" }
+       ListElement { text: "Monojet"; color: "Brown" }
+     }
+     onAccepted: {
+      if (combo.find(currentText) === -1) {
+         model.append({text: editText})
+         currentIndex = combo.find(editText)
+       }
+     }
+   }
+
 }

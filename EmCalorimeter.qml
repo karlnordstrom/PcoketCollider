@@ -3,6 +3,8 @@ import QtQuick 2.0
 Rectangle {
 	property int startRadius;
 	property int stopRadius;
+    property int spatialStart;
+    property int spatialStop;
 	property int intersections: 0
 	property var energyDeposits : [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 	width: stopRadius
@@ -23,17 +25,12 @@ Rectangle {
 	}
 
 	function deposit( energy, angle ){
-		var index = Math.floor(((angle+Math.PI)/(Math.PI*2)) * 20)
-		// deposit already exists
-		if (energyDeposits[index] !== 0){
-			//energyDeposits[index].opacity = energy;
-			return
-		}
+        var index = Math.floor(((angle+Math.PI)/(Math.PI*2)) * 20)
 		// else create a new deposit
 		var xPos = stopRadius/2 + (startRadius/2) * Math.cos((Math.PI*2/20) * index);
 		var yPos = stopRadius/2 + (startRadius/2)* Math.sin((Math.PI*2/20) * index);
 		var rot = ((360/20.0) * index) + 90
-        var d = Qt.createQmlObject('import QtQuick 2.2; Image{z: 5; source:"qrc:///emColliderSectorDeposit.png"; opacity:'+energy/50+'; x:'+ xPos +'; y: - height +'+ yPos +'; transformOrigin: Item.BottomLeft; rotation:'+rot+'; NumberAnimation on opacity{id: fadeAnimation; to: 0; duration:2000; easing.type: Easing.InCubic; running:true; onStopped:{parent.deleteDeposit('+index+')}}}', emCalorimeters, "Deposits")
+        var d = Qt.createQmlObject('import QtQuick 2.0; Image{z: 5; source:"qrc:///emColliderSectorDeposit.png"; opacity:'+energy/10+'; x:'+ xPos +'; y: - height +'+ yPos +'; transformOrigin: Item.BottomLeft; rotation:'+rot+'; NumberAnimation on opacity{id: fadeAnimation; to: 0; duration:2000; easing.type: Easing.InCubic; running:true; onStopped:{parent.deleteDeposit('+index+')}}}', emCalorimeters, "Deposits")
 		energyDeposits[index] = d
 	}
 

@@ -13,12 +13,12 @@ LDFLAGS:=$(shell rivet-config --ldflags)
 ## Get the first part of the string passed
 ANALYSISPATH = $(firstword $(subst :, ,$1))
 
-all: PocketCollider
+all: RivetPocketCollider.so
 
-PocketCollider: PocketCollider.cc
+RivetPocketCollider.so: PocketCollider.cc
 	rivet-buildplugin RivetPocketCollider.so PocketCollider.cc
 
-install: PocketCollider
+install: RivetPocketCollider.so
 	cp -f RivetPocketCollider.so $(call ANALYSISPATH, $(RIVET_ANALYSIS_PATH))
 
 clean:

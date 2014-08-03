@@ -22,22 +22,40 @@ namespace Rivet {
       addProjection(fs, "FS");
 
       outFile.open("Events.js");
-
-      _histos["MULTIPLICITY"]   = bookHisto1D("particle_multiplicity", 51, -0.5, 50.5, "Particle multiplicity ($> 0.5$ GeV)", "$N^{\mathrm{part}}$", "Relative Occurence");
+      outFile << ".pragma library" << endl;
+      outFile << "var Events = {" << endl;
+      outFile << "    numberOfEvents: {numEv: 10}," << endl;
+      //_histos["MULTIPLICITY"]   = bookHisto1D("particle_multiplicity", 51, -0.5, 50.5, "Particle multiplicity ($> 0.5$ GeV)", "$N^{\\mathrm{part}}$", "Relative Occurence");
 
     }
 
+    int eventIndex = 0;
 
     void analyze(const Event& event) {
 
+      if (eventIndex > 9) vetoEvent;
+
+      outFile << "    Event" << eventIndex << ": {" << endl;
+
       const double weight = event.weight();
       const Particles& particles = applyProjection<FinalState>(event, "FS").particles();
-      _histos["MULTIPLICITY"]->fill(particles.size(), weight);
+
+      outFile << "      numberOfParticles: {numPart:" << particles.size() << "}," << endl;
+
+      for(unsigned int index = 0; index < particles.size(); index++){
+       Particle part = particles[index];
+        outFile << "      particle" << index << ": {azimuthalAngle:" << part.momentum().phi() <<", pdgId:" << part.pdgId() << ", energy:" << part.momentum().Et() << ", charge:" << part.charge() << "}," << endl;
+      }
+
+    outFile << "    }," << endl;
+
+    eventIndex++;
 
     }
 
     void finalize() {
       /// @todo Normalise!
+      outFile << "    }" << endl;
       outFile.close();
     }
 
@@ -45,7 +63,7 @@ namespace Rivet {
 
   private:
 
-    std::map<std::string, Histo1DPtr> _histos;
+//    std::map<std::string, Histo1DPtr> _histos;
     std::ofstream outFile;
 
 

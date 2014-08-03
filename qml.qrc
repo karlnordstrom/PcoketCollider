@@ -13,5 +13,6 @@
         <file>HdCalorimeter.qml</file>
         <file>hdColliderSector.png</file>
         <file>hdColliderSectorDeposit.png</file>
+        <file>Events.js</file>
     </qresource>
 </RCC>

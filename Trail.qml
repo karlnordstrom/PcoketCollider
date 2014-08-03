@@ -15,8 +15,8 @@ Item{
             hdCalorimeters.deposit(lostEnergy, Math.atan2((beamTube.center.y -y),(beamTube.center.x - x)))
 		}
         if ( (world.isInTrackers(radius) || world.isInMuonChambers(radius)) && tracks){
-            var t = Qt.createQmlObject('import QtQuick 2.2; Rectangle{z:0; width:2; height:2; radius:2; color:"red";
-                x:'+x+'; y:'+y+'}',world, "TrailCreation");
+            var t = Qt.createQmlObject('import QtQuick 2.0; Rectangle{z:0; width:1; height:1; radius:1; color:"red";
+                x:'+x+'; y:'+y+'}', world, "TrailCreation");
 			points.push(t)
 		}
 	}
