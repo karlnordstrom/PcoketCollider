@@ -49,7 +49,7 @@ Item{
 
         trail.leaveTrail(x + particle.size / 3, y + particle.size / 3, lostEnergy,
              PDG.Particles[type].leavesTrack, PDG.Particles[type].leavesEMEnergy, PDG.Particles[type].leavesHadEnergy, radius);
-        if (energy < 0.1){
+        if (energy < 1){
             particle.visible = false
             trailFade.start()
         }

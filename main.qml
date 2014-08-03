@@ -108,15 +108,13 @@ ApplicationWindow {
 	}
 
     function getEnergyLoss(radius, tracks, EMCals, hadCals, type){
-        var EMStopper = 1.0
-        if ( type == "Photon" || type == "Electron" || type == "Positron" ) EMStopper = 0.3
-        if (!tracks && !EMCals && !hadCals) return 1.;
+        if (!tracks && EMCals == 1. && hadCals== 1.) return 1.;
         else if (isInTrackers(radius) && tracks)
             return 0.95;
-        else if (isInEmCals(radius) && EMCals)
-            return 0.2 * EMStopper;
-        else if (isInHdCals(radius) && hadCals)
-            return 0.2;
+        else if (isInEmCals(radius))
+            return EMCals;
+        else if (isInHdCals(radius))
+            return hadCals;
         else if (isInMuonChambers(radius) && tracks)
             return 0.95;
         else return 1.;
