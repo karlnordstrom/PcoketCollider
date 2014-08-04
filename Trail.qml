@@ -8,10 +8,10 @@ Item{
 
     function leaveTrail(x,y, lostEnergy, tracks, EMCals, hadCals, radius){
 		//traces in differentDetectors
-        if ( world.isInEmCals(radius) && EMCals ) {
+        if ( world.isInEmCals(radius) && EMCals != 1.0 ) {
             emCalorimeters.deposit(lostEnergy, Math.atan2((beamTube.center.y -y),(beamTube.center.x - x)))
 		}
-        if ( world.isInHdCals(radius) && hadCals ) {
+        if ( world.isInHdCals(radius) && hadCals != 1.0 ) {
             hdCalorimeters.deposit(lostEnergy, Math.atan2((beamTube.center.y -y),(beamTube.center.x - x)))
 		}
         if ( (world.isInTrackers(radius) || world.isInMuonChambers(radius)) && tracks){

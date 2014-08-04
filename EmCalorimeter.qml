@@ -31,11 +31,11 @@ Rectangle {
 		var yPos = stopRadius/2 + (startRadius/2)* Math.sin((Math.PI*2/20) * index);
 		var rot = ((360/20.0) * index) + 90
         var d = Qt.createQmlObject('import QtQuick 2.0; Image{z: 5; source:"qrc:///emColliderSectorDeposit.png"; opacity:'+energy/10+'; x:'+ xPos +'; y: - height +'+ yPos +'; transformOrigin: Item.BottomLeft; rotation:'+rot+'; NumberAnimation on opacity{id: fadeAnimation; to: 0; duration:2000; easing.type: Easing.InCubic; running:true; onStopped:{parent.deleteDeposit('+index+')}}}', emCalorimeters, "Deposits")
-		energyDeposits[index] = d
+        energyDeposits[index] = d
 	}
 
 	function deleteDeposit(index){
-		energyDeposits[index].destroy()
+        //energyDeposits[index].destroy()
 		energyDeposits[index] = 0
 	}
 }

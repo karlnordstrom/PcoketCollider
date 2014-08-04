@@ -3,7 +3,8 @@ import QtQuick.Controls 1.0
 import "qrc:///"
 import "pdg.js" as PDG
 import "Physics.js" as PHYSICS
-import "Events.js" as EVENTS
+import "Dijet.js" as DIJET
+import "Higgs.js" as HIGGS
 
 ApplicationWindow {
 	id: world
@@ -11,14 +12,14 @@ ApplicationWindow {
     width: 1200
     height: 900
     title: "Collider Detector in Pocket"
-    property real magneticField: 0.5
+    property real magneticField: 0.07
     property real c: PHYSICS.c
 
 	//Filling of the Particle Array
 	property var particles: []
 
 	Component.onCompleted:{
-		for (var i=0; i<100; i++){
+        for (var i=0; i<1000; i++){
 			var p = Qt.createQmlObject('import QtQuick 2.0; Particle{}',world, "ParticleCreation");
 			particles.push(p);
 		}
@@ -59,10 +60,10 @@ ApplicationWindow {
 	Detector{
 		z:3
 		id: siliconDetector
-        startRadius: 100
+        startRadius: 50
         stopRadius: 280
-        spatialStart: 80
-        spatialStop: 260
+        spatialStart: 40
+        spatialStop: 270
 		anchors.centerIn: parent
 	}
 
@@ -73,14 +74,23 @@ ApplicationWindow {
 		property point center: Qt.point(x + width/2, y + height/2)
 	}
 
-    function collisionEvent(typeOfEvent){
-        if (typeof typeOfEvent !== 'undefined') {
-            var evNo = Math.floor(Math.random() * EVENTS.Events["numberOfEvents"].numEv)
-            var noOfParts = EVENTS.Events["Event"+evNo]["numberOfParticles"].numPart
+    function collisionEvent(){
+        var typeOfEvent = selectEventType.currentText
+        if (typeOfEvent == "Dijet") {
+            var evNo = Math.floor(Math.random() * DIJET.Events["numberOfEvents"].numEv)
+            var noOfParts = DIJET.Events["Event"+evNo]["numberOfParticles"].numPart
             var randPhi = Math.random() * 2 * Math.PI
             for (var i = 0; i < noOfParts; i++)
-                launchSingle(EVENTS.Events["Event"+evNo]["particle"+i].pdgId, EVENTS.Events["Event"+evNo]["particle"+i].energy, EVENTS.Events["Event"+evNo]["particle"+i].azimuthalAngle,
-                             EVENTS.Events["Event"+evNo]["particle"+i].charge)
+                launchSingle(DIJET.Events["Event"+evNo]["particle"+i].pdgId, DIJET.Events["Event"+evNo]["particle"+i].energy, DIJET.Events["Event"+evNo]["particle"+i].azimuthalAngle + randPhi,
+                             DIJET.Events["Event"+evNo]["particle"+i].charge)
+        }
+        else if (typeOfEvent == "Higgs") {
+            var evNo = Math.floor(Math.random() * HIGGS.Events["numberOfEvents"].numEv)
+            var noOfParts = HIGGS.Events["Event"+evNo]["numberOfParticles"].numPart
+            var randPhi = Math.random() * 2 * Math.PI
+            for (var i = 0; i < noOfParts; i++)
+                launchSingle(HIGGS.Events["Event"+evNo]["particle"+i].pdgId, HIGGS.Events["Event"+evNo]["particle"+i].energy, HIGGS.Events["Event"+evNo]["particle"+i].azimuthalAngle + randPhi,
+                             HIGGS.Events["Event"+evNo]["particle"+i].charge)
         }
         else {
             var numberOfSingleEvents = 1 + Math.floor(Math.random() * 5)
@@ -135,13 +145,13 @@ ApplicationWindow {
     function getEnergyLoss(radius, tracks, EMCals, hadCals, type){
         if (!tracks && EMCals == 1. && hadCals== 1.) return 1.;
         else if (isInTrackers(radius) && tracks)
-            return 0.95;
+            return 1.;
         else if (isInEmCals(radius))
             return EMCals;
         else if (isInHdCals(radius))
             return hadCals;
         else if (isInMuonChambers(radius) && tracks)
-            return 0.95;
+            return 1.;
         else return 1.;
     }
 
@@ -155,18 +165,18 @@ ApplicationWindow {
     }
 
 	function isInEmCals(radius){
-        if (radius < emCalorimeters.startRadius/2.)
+        if (radius < emCalorimeters.spatialStart/2.)
             return false;
-        else if (radius > emCalorimeters.startRadius/2. && radius < emCalorimeters.stopRadius/2.)
+        else if (radius > emCalorimeters.spatialStart/2. && radius < emCalorimeters.spatialStop/2.)
             return true;
         else
             return false;
     }
 
 	function isInHdCals(radius){
-        if (radius < hdCalorimeters.startRadius/2.)
+        if (radius < hdCalorimeters.spatialStart/2.)
 			return false;
-        else if (radius > hdCalorimeters.startRadius/2. && radius < hdCalorimeters.stopRadius/2.)
+        else if (radius > hdCalorimeters.spatialStart/2. && radius < hdCalorimeters.spatialStop/2.)
 			return true;
 		else
 			return false;
@@ -188,7 +198,7 @@ ApplicationWindow {
        id: eventType
        ListElement { text: "Dijet"; color: "Yellow" }
        ListElement { text: "Higgs"; color: "Green" }
-       ListElement { text: "Monojet"; color: "Brown" }
+       ListElement { text: "Random (note: unphysical)"; color: "Brown" }
      }
      onAccepted: {
       if (combo.find(currentText) === -1) {
