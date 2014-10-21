@@ -17,7 +17,7 @@ Rectangle {
 		anchors.centerIn: parent
 		model: 20
 		Image{	z: 4
-				source: "qrc:///emColliderSector.png";
+                source: "emColliderSector.png";
 				x:  parent.stopRadius/2 + (parent.startRadius/2) * Math.cos((Math.PI*2/20) * index)
 				y:  -height + parent.stopRadius/2 + (parent.startRadius/2)* Math.sin((Math.PI*2/20) * index)
 				transformOrigin: Item.BottomLeft
@@ -30,7 +30,7 @@ Rectangle {
 		var xPos = stopRadius/2 + (startRadius/2) * Math.cos((Math.PI*2/20) * index);
 		var yPos = stopRadius/2 + (startRadius/2)* Math.sin((Math.PI*2/20) * index);
 		var rot = ((360/20.0) * index) + 90
-        var d = Qt.createQmlObject('import QtQuick 2.0; Image{z: 5; source:"qrc:///emColliderSectorDeposit.png"; opacity:'+energy/10+'; x:'+ xPos +'; y: - height +'+ yPos +'; transformOrigin: Item.BottomLeft; rotation:'+rot+'; NumberAnimation on opacity{id: fadeAnimation; to: 0; duration:2000; easing.type: Easing.InCubic; running:true; onStopped:{parent.deleteDeposit('+index+')}}}', emCalorimeters, "Deposits")
+        var d = Qt.createQmlObject('import QtQuick 2.0; Image{z: 5; source:"emColliderSectorDeposit.png"; opacity:'+energy/10+'; x:'+ xPos +'; y: - height +'+ yPos +'; transformOrigin: Item.BottomLeft; rotation:'+rot+'; NumberAnimation on opacity{id: fadeAnimation; to: 0; duration:2000; easing.type: Easing.InCubic; running:true; onStopped:{parent.deleteDeposit('+index+')}}}', emCalorimeters, "Deposits")
         energyDeposits[index] = d
 	}
 
