@@ -89,7 +89,7 @@ Item{
 		z:1
 		visible: particle.visible
 		NumberAnimation on opacity{
-			id:trailFade; from: 1; to:0; duration: 2000;
+            id:trailFade; from: 1; to:0; duration: 50;
 			easing.type: Easing.InCubic; running:false; onStopped:{trail.clearPath()}
 		}
 	}

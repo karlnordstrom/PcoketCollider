@@ -112,7 +112,7 @@ ApplicationWindow {
         if (id == -1) var type = PDG.determineParticle(Math.pow(-1, Math.floor(Math.random() * 1000)) * Math.floor(Math.random() * 1000))
         else var type = PDG.determinePdgId(id, charge)
         if (energy == -1.0) energy = 1 + Math.random() * 10
-        p.launch(phi, energy, type)
+        if (energy > 2.) p.launch(phi, energy, type)
 
 		particles.unshift(p)
 	}
